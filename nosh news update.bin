@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <title>Nosh News Health - نۆش نیوز</title>
+    
+    <link rel="apple-touch-icon" href="https://i.ibb.co/Md7Br6Y/logo.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://i.ibb.co/Md7Br6Y/logo.png">
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Nosh News">
+    
+    <link rel="icon" type="image/png" href="https://i.ibb.co/Md7Br6Y/logo.png">
+    <meta name="description" content="نۆش نیوز - پلاتفۆرمەکێ تایبەت ب ساخلەمیێ">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;500;800&family=Poppins:wght@400;700;800&display=swap');
+
+        :root {
+            --medical-blue: #00d4ff;
+            --medical-green: #2ecc71;
+            --medical-white: #ffffff;
+            --dark-bg: #050f1a;
+        }
+
+        body, html {
+            margin: 0; padding: 0; height: 100%;
+            font-family: 'Noto Sans Arabic', sans-serif;
+            background: var(--dark-bg); overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
+        /* Background Video */
+        #bg-video {
+            position: fixed; right: 0; bottom: 0; min-width: 100%; min-height: 100%;
+            z-index: -2; filter: brightness(0.2); object-fit: cover;
+        }
+
+        .overlay-dark {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, transparent 20%, rgba(5, 15, 26, 0.9) 100%);
+            z-index: -1;
+        }
+
+        .container {
+            position: relative; z-index: 1;
+            max-width: 400px; margin: 30px auto;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 212, 254, 0.15);
+            border-radius: 45px;
+            padding: 30px 20px 40px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        /* Logo Animations */
+        @keyframes rotate-ring { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes heart-pulse {
+            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 5px var(--medical-blue)); }
+            10% { transform: scale(1.1); filter: drop-shadow(0 0 15px var(--medical-blue)); }
+            20% { transform: scale(1); }
+        }
+
+        .logo-wrapper { position: relative; width: 140px; height: 140px; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; }
+        .logo-ring { position: absolute; width: 100%; height: 100%; border-radius: 50%; background: conic-gradient(var(--medical-white), var(--medical-green), var(--medical-blue), var(--medical-white)); padding: 4px; animation: rotate-ring 3s linear infinite; -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #fff 0); mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #fff 0); }
+        .logo-img { width: 105px; height: 105px; border-radius: 50%; z-index: 5; object-fit: cover; animation: heart-pulse 2s infinite ease-in-out; }
+
+        h1 { color: white; font-family: 'Poppins', sans-serif; font-size: 32px; font-weight: 800; margin: 0 0 10px; }
+
+        .health-card-ecg {
+            position: relative; background: rgba(255, 255, 255, 0.05);
+            margin: 20px auto 30px; padding: 22px 15px; border-radius: 25px;
+            border-left: 2px solid var(--medical-green); border-right: 2px solid var(--medical-blue);
+        }
+        .health-card-ecg p { color: #fff; font-size: 14px; margin: 0; font-weight: 500; }
+        
+        /* Interactive Call Button */
+        .btn-call-new {
+            position: relative; height: 75px; overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(46, 204, 113, 0.1));
+            border: 2px solid var(--medical-blue); border-radius: 35px;
+            text-decoration: none; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-bottom: 15px; box-shadow: 0 5px 15px rgba(0, 212, 255, 0.1);
+        }
+
+        .call-content-wrapper { position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+
+        .call-default {
+            display: flex; align-items: center; gap: 15px;
+            transition: all 0.4s ease; opacity: 1; transform: translateY(0);
+        }
+
+        .call-hover-name {
+            position: absolute; opacity: 0; transform: translateY(30px);
+            transition: all 0.4s ease; font-family: 'Poppins', sans-serif;
+            font-size: 24px; font-weight: 800; color: #fff;
+            text-shadow: 0 0 15px var(--medical-blue);
+        }
+
+        /* Hover & Active States */
+        .btn-call-new:hover, .btn-call-new:active {
+            background: rgba(0, 212, 255, 0.2);
+            border-color: var(--medical-green);
+            box-shadow: 0 0 25px rgba(0, 212, 255, 0.3);
+        }
+
+        .btn-call-new:hover .call-default, .btn-call-new:active .call-default {
+            opacity: 0; transform: translateY(-30px);
+        }
+
+        .btn-call-new:hover .call-hover-name, .btn-call-new:active .call-hover-name {
+            opacity: 1; transform: translateY(0);
+        }
+
+        .fa-phone-primary { font-size: 28px; color: var(--medical-blue); animation: phone-ring 1.5s infinite ease-in-out; }
+        .call-text { display: flex; flex-direction: column; align-items: flex-start; }
+        .call-title { color: #fff; font-weight: 800; font-size: 16px; }
+        .call-number { color: var(--medical-green); font-family: 'Poppins', sans-serif; font-size: 17px; direction: ltr; }
+
+        /* Social Buttons */
+        .social-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .btn { 
+            background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255,255,255,0.1); 
+            padding: 18px 10px; border-radius: 22px; color: white; text-decoration: none; 
+            font-size: 14px; display: flex; flex-direction: column; align-items: center; gap: 8px; 
+            transition: all 0.3s ease; 
+        }
+        .btn:hover { transform: translateY(-3px); background: rgba(255, 255, 255, 0.12); border-color: var(--medical-blue); }
+        .btn:active { transform: scale(0.95); }
+        .btn i { font-size: 26px; }
+        .btn-fb { grid-column: span 2; flex-direction: row !important; justify-content: center; gap: 12px !important; font-size: 18px; font-weight: 700; background: rgba(24, 119, 242, 0.1); border-color: rgba(24, 119, 242, 0.3); }
+
+        @keyframes phone-ring { 0%, 100% { transform: rotate(0); } 10%, 30% { transform: rotate(15deg); } 20%, 40% { transform: rotate(-15deg); } }
+        .fa-whatsapp { color: #25D366; }
+        .fa-instagram { color: #ff0055; }
+        .fa-tiktok { color: #fff; }
+        .fa-snapchat { color: #FFFC00; }
+        .fa-facebook { color: #1877F2; }
+
+        .footer-text { margin-top: 35px; font-size: 10px; color: rgba(255,255,255,0.2); font-family: 'Poppins', sans-serif; line-height: 1.6; }
+    </style>
+</head>
+<body>
+
+<video autoplay muted loop playsinline id="bg-video">
+  <source src="https://assets.mixkit.co/videos/preview/mixkit-white-particles-in-a-blue-background-2415-large.mp4" type="video/mp4">
+</video>
+<div class="overlay-dark"></div>
+
+<div class="container">
+    <div class="logo-wrapper">
+        <div class="logo-ring"></div>
+        <img src="https://i.ibb.co/Md7Br6Y/logo.png" class="logo-img" alt="Nosh News Logo">
+    </div>
+
+    <h1>Nosh News</h1>
+    
+    <div class="health-card-ecg">
+        <p>ئەم گرنگیێ ب بابەتێن ساخلەمیا گشتی ددەین و ئارمانجا مە ساخلەمیا وە یە</p>
+    </div>
+
+    <div class="social-grid">
+        <div style="grid-column: span 2; width: 100%;">
+            <a href="tel:+9647507601199" class="btn-call-new">
+                <div class="call-content-wrapper">
+                    <div class="call-default">
+                        <i class="fa-solid fa-phone-volume fa-phone-primary"></i>
+                        <div class="call-text">
+                            <span class="call-title">پەیوەندیێ ب مە بکە</span>
+                            <span class="call-number">+964 750 760 1199</span>
+                        </div>
+                    </div>
+                    <div class="call-hover-name">NOSH NEWS</div>
+                </div>
+            </a>
+        </div>
+
+        <a href="https://www.facebook.com/noshnews" target="_blank" class="btn btn-fb">
+            <i class="fa-brands fa-facebook"></i> Facebook
+        </a>
+
+        <a href="https://wa.me/9647507601199" target="_blank" class="btn">
+            <i class="fa-brands fa-whatsapp"></i> WhatsApp
+        </a>
+        <a href="https://instagram.com/noshnewsnet" target="_blank" class="btn">
+            <i class="fa-brands fa-instagram"></i> Instagram
+        </a>
+        <a href="https://tiktok.com/@noshnews" target="_blank" class="btn">
+            <i class="fa-brands fa-tiktok"></i> TikTok
+        </a>
+        <a href="https://snapchat.com/t/sJrO4DpT" target="_blank" class="btn">
+            <i class="fa-brands fa-snapchat"></i> Snapchat
+        </a>
+    </div>
+
+    <p class="footer-text">Development By: Bizhar Rasheed <br> NOSH NEWS | 2026</p>
+</div>
+
+</body>
+</html>
