@@ -70,17 +70,28 @@
                 <span id="next-inv-no" style="background:var(--primary); color:white; padding:5px 15px; border-radius:10px; font-weight:900;">#1</span>
             </div>
             <div id="scanner-wrapper"><div id="reader"></div><button class="main-btn" style="background:var(--danger);" onclick="stopScanner()">Stop</button></div>
+            
             <label id="t-cust-label">ناڤێ کڕیار</label>
             <input type="text" id="i-cust" placeholder="...">
+            
+            <label style="margin-top:15px; display:block;">جۆرێ پارەدانێ</label>
+            <select id="i-pay-type" onchange="calcFinal()">
+                <option value="cash">نەقد (Cash)</option>
+                <option value="debt">قیست (Installment %40)</option>
+            </select>
+
             <label style="margin-top:15px; display:block;" id="t-items-label">کەلوپەل</label>
             <div style="display:flex; gap:5px;">
                 <select id="i-select"></select>
                 <button onclick="addItemToSale()" class="main-btn" style="width:55px; margin-top:8px;"><i class="fa-solid fa-plus"></i></button>
                 <button onclick="startScanner('sale')" class="main-btn" style="width:55px; margin-top:8px; background:var(--text);"><i class="fa-solid fa-qrcode"></i></button>
             </div>
+
             <div id="selected-items-area" style="margin-top:15px; max-height: 250px; overflow-y: auto;"></div>
-            <label id="t-disc-label" style="margin-top:10px; display:block;">داشکاندن</label>
+            
+            <label id="t-disc-label" style="margin-top:10px; display:block;">داشکاندن (تنێ بۆ نەقد)</label>
             <input type="number" id="i-disc" value="0" oninput="calcFinal()">
+
             <div style="margin-top:15px; padding:15px; background:var(--primary); color:white; border-radius:15px; text-align:center;">
                 <small id="t-total-label">کۆمێ گشتی</small>
                 <h2 id="f-total" style="font-size:28px;">0</h2>
@@ -98,7 +109,7 @@
             </div>
             <div class="table-wrap">
                 <table>
-                    <thead><tr><th>#</th><th id="th-cust">کڕیار</th><th id="th-total">کۆم</th><th id="th-date">رێکەفت</th><th>X</th></tr></thead>
+                    <thead><tr><th>#</th><th id="th-cust">کڕیار</th><th>جۆر</th><th id="th-total">کۆم</th><th id="th-date">رێکەفت</th><th>X</th></tr></thead>
                     <tbody id="sales-list"></tbody>
                 </table>
             </div>
@@ -130,27 +141,61 @@
             <input type="number" id="a-qty" placeholder="Qty">
         </div>
         <button class="main-btn" onclick="addInv()">زێدەکرن</button>
+        <div class="search-box" style="margin-top:10px;">
+            <input type="text" id="inv-search" placeholder="گەڕیان ل کەرەستان..." oninput="renderAll()">
+        </div>
         <div class="table-wrap"><table><thead><tr><th>ناڤ</th><th>بها</th><th>دانە</th><th>X</th></tr></thead><tbody id="inv-table"></tbody></table></div>
     </div>
 </div>
 
-<div class="modal" id="debt-modal" onclick="closeModal('debt-modal')"><div class="modal-content" onclick="event.stopPropagation()"><h3 id="t-debt-title">قەرزان</h3><div class="table-wrap"><table><thead><tr><th>کڕیار</th><th>کۆمێ قەرزی</th><th>رێکەفت</th></tr></thead><tbody id="debt-table"></tbody></table></div></div></div>
-<div class="modal" id="exp-modal" onclick="closeModal('exp-modal')"><div class="modal-content" onclick="event.stopPropagation()"><h3 id="t-exp-title">خەرجی</h3><div class="table-wrap"><table><thead><tr><th>خەرجی</th><th>بها</th><th>رێکەفت</th></tr></thead><tbody id="exp-table"></tbody></table></div></div></div>
-<div class="modal" id="rep-modal" onclick="closeModal('rep-modal')"><div class="modal-content" onclick="event.stopPropagation()"><h3 id="t-rep-title">ڕاپۆرت</h3><div id="rep-summary" style="padding:20px; background:var(--bg); border-radius:15px; margin-top:10px;"></div></div></div>
+<div class="modal" id="debt-modal" onclick="closeModal('debt-modal')">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <h3 id="t-debt-title">لیستا قەرزێن قیستێ</h3>
+        <div class="table-wrap">
+            <table><thead><tr><th>کڕیار</th><th>فاتورە</th><th>کۆمێ قەرزی</th><th>رێکەفت</th></tr></thead><tbody id="debt-table"></tbody></table>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="exp-modal" onclick="closeModal('exp-modal')">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <h3 id="t-exp-title">تۆمارکرنا خەرجییان</h3>
+        <div style="display:flex; gap:10px; margin-bottom:10px;">
+            <input type="text" id="e-note" placeholder="چ تشتە؟">
+            <input type="number" id="e-amount" placeholder="بها">
+            <button onclick="addExp()" class="main-btn" style="width:100px;">ثبت</button>
+        </div>
+        <div class="table-wrap"><table><thead><tr><th>تێبینی</th><th>بها</th><th>رێکەفت</th></tr></thead><tbody id="exp-table"></tbody></table></div>
+    </div>
+</div>
+
+<div class="modal" id="rep-modal" onclick="closeModal('rep-modal')">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <h3 id="t-rep-title">ڕاپۆرت</h3>
+        <div id="rep-summary" style="padding:20px; background:var(--bg); border-radius:15px; margin-top:10px;"></div>
+    </div>
+</div>
 
 <div id="print-receipt">
-    <div style="text-align:center; border-bottom:2px solid #000; padding-bottom:5px;">
+    <div style="text-align:center; border-bottom:1px solid #000; padding-bottom:10px;">
         <h2 style="margin:0;">BIZHAR COMPUTER</h2>
         <p>وەسڵا فرۆتنێ: #<span id="r-inv-no"></span></p>
     </div>
     <div style="margin:10px 0; font-size:12px;">
         <p><b>کڕیار:</b> <span id="r-cust"></span></p>
-        <p><b>رێکەفت:</b> <span id="r-date"></span></p>
-        <p><b>دەم:</b> <span id="r-time"></span></p>
+        <p><b>رێکەفت:</b> <span id="r-date"></span> <span id="r-time"></span></p>
+        <p><b>جۆر:</b> <span id="r-type"></span></p>
     </div>
-    <table style="width:100%; border-top:1px solid #000;"><tbody id="r-items-list"></tbody></table>
-    <div style="border-top:1px solid #000; padding-top:5px; text-align:right;"><h3>کۆم: <span id="r-final"></span> د.ع</h3></div>
-    <div style="text-align:center; margin-top:15px; font-size:10px;">سوپاس بۆ سەرەدانا وە</div>
+    <table style="width:100%; border-collapse:collapse; font-size:12px;">
+        <thead style="border-bottom:1px solid #000;"><tr><th align="right">بابەت</th><th align="left">بها</th></tr></thead>
+        <tbody id="r-items-list"></tbody>
+    </table>
+    <div style="border-top:1px solid #000; margin-top:10px; padding-top:5px; text-align:right;">
+        <h3>کۆمێ گشتی: <span id="r-final"></span> IQD</h3>
+    </div>
+    <div style="text-align:center; margin-top:20px; font-size:10px; border-top:1px dashed #ccc; padding-top:10px;">
+        سوپاس بۆ هەڵبژارتنا مە <br> BIZHAR COMPUTER
+    </div>
 </div>
 
 <script>
@@ -160,15 +205,14 @@
     const languages = {
         ku: { new_sale: "فرۆتنا نوی", cust: "ناڤێ کڕیار", items: "کەلوپەل", disc: "داشکاندن", total: "کۆمێ گشتی", save: "تۆمار و پرێنت", inv_list: "لیستا فاتورەیان", inventory: "کۆگە", debt: "قەرزان", exp: "خەرجی", report: "ڕاپۆرت", settings: "ڕێکخستن", search: "گەڕیان ب ناڤ یان ژمارە..." },
         ar: { new_sale: "بيع جديد", cust: "اسم الزبون", items: "المواد", disc: "خصم", total: "المجموع", save: "حفظ وطباعة", inv_list: "الفواتير", inventory: "المخزن", debt: "الديون", exp: "المصاريف", report: "التقرير", settings: "الإعدادات", search: "البحث بالاسم او الرقم..." },
-        en: { new_sale: "New Sale", cust: "Customer", items: "Items", disc: "Discount", total: "Total", save: "Save & Print", inv_list: "Invoices", inventory: "Inventory", debt: "Debts", exp: "Expenses", report: "Reports", settings: "Settings", search: "Search by name or number..." },
-        tr: { new_sale: "Yeni Satış", cust: "Müşteri", items: "Ürünler", disc: "İndirim", total: "Toplam", save: "Kaydet & Yazdır", inv_list: "Faturalar", inventory: "Stok", debt: "Borçlar", exp: "Giderler", report: "Raporlar", settings: "Ayarlar", search: "İsim veya numara ile ara..." },
-        fa: { new_sale: "فروش جدید", cust: "مشتری", items: "کالاها", disc: "تخفیف", total: "جمع کل", save: "ثبت و چاپ", inv_list: "فاکتورها", inventory: "انبار", debt: "بدهی‌ها", exp: "هزینه‌ها", report: "گزارشات", settings: "تنظیمات", search: "جستجو با نام یا شماره..." }
+        en: { new_sale: "New Sale", cust: "Customer", items: "Items", disc: "Discount", total: "Total", save: "Save & Print", inv_list: "Invoices", inventory: "Inventory", debt: "Debts", exp: "Expenses", report: "Reports", settings: "Settings", search: "Search by name or number..." }
     };
 
     const firebaseConfig = { databaseURL: "https://bizhar-pos-default-rtdb.firebaseio.com/" };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
-    let inv=[], sales=[], currentSaleItems=[], invCounter=1, html5QrCode;
+    
+    let inv=[], sales=[], expenses=[], currentSaleItems=[], invCounter=1, html5QrCode;
 
     function checkLogin() {
         const u = document.getElementById('login-user').value;
@@ -177,7 +221,7 @@
             localStorage.setItem('bizhar_login', 'true');
             document.getElementById('login-overlay').style.display = 'none';
         } else {
-            document.getElementById('login-msg').innerText = "Wrong User or Password!";
+            document.getElementById('login-msg').innerText = "کۆد خەلەتە!";
         }
     }
 
@@ -191,9 +235,13 @@
         } else if(p !== null) alert("Wrong Password!");
     }
 
+    // Sync with Firebase
     db.ref('/').on('value', snap => {
         const d = snap.val() || {};
-        inv = d.i || []; sales = d.s || []; invCounter = d.c || (sales.length + 1);
+        inv = d.i || []; 
+        sales = d.s || []; 
+        expenses = d.e || [];
+        invCounter = d.c || (sales.length + 1);
         document.getElementById('next-inv-no').innerText = "#" + invCounter;
         renderAll();
     });
@@ -206,7 +254,7 @@
                 const itm = inv.find(x => x.code === txt);
                 if(itm && parseInt(itm.qty) > 0) { currentSaleItems.push({...itm}); renderCurrentSale(); }
             } else { document.getElementById('a-code').value = txt; stopScanner(); }
-        });
+        }).catch(err => console.log(err));
     }
 
     function stopScanner() { if(html5QrCode) html5QrCode.stop().then(()=> document.getElementById('scanner-wrapper').style.display='none'); }
@@ -215,13 +263,13 @@
         const name = document.getElementById('i-select').value;
         const itm = inv.find(x => x.name === name);
         if(itm && parseInt(itm.qty) > 0) { currentSaleItems.push({...itm}); renderCurrentSale(); }
-        else if(itm) alert("Out of stock!");
+        else if(itm) alert("دانە ل کۆگە نینە!");
     }
 
     function renderCurrentSale() {
         const area = document.getElementById('selected-items-area'); area.innerHTML = '';
         currentSaleItems.forEach((itm, idx) => {
-            area.innerHTML += `<div class="item-row"><div><b>${itm.name}</b><br><small>${parseInt(itm.cost).toLocaleString()}</small></div><i class="fa-solid fa-circle-xmark" onclick="removeItem(${idx})" style="color:var(--danger); cursor:pointer;"></i></div>`;
+            area.innerHTML += `<div class="item-row"><div><b>${itm.name}</b><br><small>${parseInt(itm.cost).toLocaleString()} IQD</small></div><i class="fa-solid fa-circle-xmark" onclick="removeItem(${idx})" style="color:var(--danger); cursor:pointer;"></i></div>`;
         });
         calcFinal();
     }
@@ -230,72 +278,143 @@
 
     function calcFinal() {
         let sub = currentSaleItems.reduce((a, b) => a + parseFloat(b.cost), 0);
-        let d = parseFloat(document.getElementById('i-disc').value) || 0;
-        let total = Math.max(0, sub - d);
-        document.getElementById('f-total').innerText = total.toLocaleString();
-        return total;
+        const type = document.getElementById('i-pay-type').value;
+        let total = sub;
+
+        if(type === 'debt') {
+            total = sub * 1.40; // Add 40% margin for installments
+            document.getElementById('i-disc').disabled = true;
+            document.getElementById('i-disc').value = 0;
+        } else {
+            document.getElementById('i-disc').disabled = false;
+            let d = parseFloat(document.getElementById('i-disc').value) || 0;
+            total = Math.max(0, sub - d);
+        }
+        
+        document.getElementById('f-total').innerText = Math.round(total).toLocaleString();
+        return Math.round(total);
     }
 
     function saveSale() {
         if(currentSaleItems.length === 0) return;
         const now = new Date();
+        const type = document.getElementById('i-pay-type').value;
+        const finalPrice = calcFinal();
+
         const saleData = {
             invNo: invCounter,
             cust: document.getElementById('i-cust').value.trim() || "Guest",
             items: currentSaleItems,
-            total: calcFinal(),
+            total: finalPrice,
+            type: type,
             date: now.toLocaleDateString('en-GB'),
             time: now.toLocaleTimeString('en-GB', {hour12:false})
         };
-        currentSaleItems.forEach(si => { let idx = inv.findIndex(x => x.name===si.name); if(idx>-1) inv[idx].qty = parseInt(inv[idx].qty) - 1; });
-        sales.unshift(saleData); invCounter++;
-        db.ref('/').set({ i: inv, s: sales, c: invCounter });
 
+        // Update Inventory qty
+        currentSaleItems.forEach(si => { 
+            let idx = inv.findIndex(x => x.name === si.name); 
+            if(idx > -1) inv[idx].qty = parseInt(inv[idx].qty) - 1; 
+        });
+
+        sales.unshift(saleData); 
+        invCounter++;
+        db.ref('/').set({ i: inv, s: sales, c: invCounter, e: expenses });
+
+        // Print Setup
         document.getElementById('r-inv-no').innerText = saleData.invNo;
         document.getElementById('r-cust').innerText = saleData.cust;
         document.getElementById('r-date').innerText = saleData.date;
         document.getElementById('r-time').innerText = saleData.time;
+        document.getElementById('r-type').innerText = type === 'cash' ? 'نەقد' : 'قیست (1.4x)';
         const rl = document.getElementById('r-items-list'); rl.innerHTML = '';
-        saleData.items.forEach(i => rl.innerHTML += `<tr><td>${i.name}</td><td align="left">${parseInt(i.cost).toLocaleString()}</td></tr>`);
-        document.getElementById('r-final').innerText = saleData.total.toLocaleString();
+        saleData.items.forEach(i => rl.innerHTML += `<tr><td align="right">${i.name}</td><td align="left">${parseInt(i.cost).toLocaleString()}</td></tr>`);
+        document.getElementById('r-final').innerText = finalPrice.toLocaleString();
 
-        setTimeout(() => { window.print(); currentSaleItems=[]; document.getElementById('i-cust').value=""; renderCurrentSale(); }, 500);
+        setTimeout(() => { 
+            window.print(); 
+            currentSaleItems=[]; 
+            document.getElementById('i-cust').value=""; 
+            renderCurrentSale(); 
+        }, 500);
+    }
+
+    function addExp() {
+        const note = document.getElementById('e-note').value;
+        const amt = document.getElementById('e-amount').value;
+        if(note && amt) {
+            expenses.unshift({note, amt: parseFloat(amt), date: new Date().toLocaleDateString('en-GB')});
+            db.ref('/').set({i:inv, s:sales, c:invCounter, e:expenses});
+            document.getElementById('e-note').value = '';
+            document.getElementById('e-amount').value = '';
+        }
     }
 
     function renderAll() {
-        const query = document.getElementById('sale-search').value.toLowerCase();
+        // Render Inventory Select
         const sel = document.getElementById('i-select'); sel.innerHTML = '<option value="">...</option>';
         inv.forEach(x => { if(parseInt(x.qty) > 0) sel.innerHTML += `<option value="${x.name}">${x.name} (${parseInt(x.cost).toLocaleString()})</option>`; });
         
+        // Render Sales Table
+        const query = document.getElementById('sale-search').value.toLowerCase();
         const sl = document.getElementById('sales-list'); sl.innerHTML = '';
         sales.filter(s => s.cust.toLowerCase().includes(query) || s.invNo.toString().includes(query)).forEach((s, idx) => {
-            sl.innerHTML += `<tr><td>#${s.invNo}</td><td>${s.cust}</td><td>${s.total.toLocaleString()}</td><td>${s.date}</td><td><i onclick="delSale(${idx})" class="fa-solid fa-trash" style="color:var(--danger); cursor:pointer;"></i></td></tr>`;
+            sl.innerHTML += `<tr><td>#${s.invNo}</td><td>${s.cust}</td><td>${s.type}</td><td>${s.total.toLocaleString()}</td><td>${s.date}</td><td><i onclick="delSale(${idx})" class="fa-solid fa-trash" style="color:var(--danger); cursor:pointer;"></i></td></tr>`;
         });
 
+        // Render Inventory Table with search
+        const invQuery = document.getElementById('inv-search').value.toLowerCase();
         const il = document.getElementById('inv-table'); il.innerHTML = '';
-        inv.forEach((x, idx) => {
+        inv.filter(x => x.name.toLowerCase().includes(invQuery)).forEach((x, idx) => {
             const low = parseInt(x.qty) < 5 ? '<span class="badge-danger">Low</span>' : '';
             il.innerHTML += `<tr><td>${x.name}</td><td>${parseInt(x.cost).toLocaleString()}</td><td>${x.qty} ${low}</td><td><i onclick="delInv(${idx})" class="fa-solid fa-trash" style="color:var(--danger); cursor:pointer;"></i></td></tr>`;
+        });
+
+        // Render Debt (Installments)
+        const dl = document.getElementById('debt-table'); dl.innerHTML = '';
+        sales.filter(s => s.type === 'debt').forEach(s => {
+            dl.innerHTML += `<tr><td>${s.cust}</td><td>#${s.invNo}</td><td>${s.total.toLocaleString()}</td><td>${s.date}</td></tr>`;
+        });
+
+        // Render Expenses
+        const el = document.getElementById('exp-table'); el.innerHTML = '';
+        expenses.forEach((e, idx) => {
+            el.innerHTML += `<tr><td>${e.note}</td><td>${e.amt.toLocaleString()}</td><td>${e.date}</td></tr>`;
         });
     }
 
     function addInv() {
         const n = document.getElementById('a-name').value, c = document.getElementById('a-code').value, p = document.getElementById('a-cost').value, q = document.getElementById('a-qty').value;
-        if(n && p && q) { inv.push({name:n, code:c, cost:p, qty:q}); db.ref('/').set({i:inv, s:sales, c:invCounter}); document.getElementById('a-name').value=''; document.getElementById('a-code').value=''; document.getElementById('a-cost').value=''; document.getElementById('a-qty').value=''; }
+        if(n && p && q) { 
+            inv.push({name:n, code:c, cost:p, qty:q}); 
+            db.ref('/').set({i:inv, s:sales, c:invCounter, e:expenses}); 
+            document.getElementById('a-name').value=''; document.getElementById('a-code').value=''; document.getElementById('a-cost').value=''; document.getElementById('a-qty').value=''; 
+        }
     }
 
     function updateReport() {
-        const total = sales.reduce((a, b) => a + b.total, 0);
+        const totalSales = sales.reduce((a, b) => a + b.total, 0);
+        const totalExp = expenses.reduce((a, b) => a + b.amt, 0);
         document.getElementById('rep-summary').innerHTML = `
-            <div style="background:var(--primary); color:white; padding:15px; border-radius:10px; text-align:center;">
-                <h3>Total Sales: ${total.toLocaleString()}</h3>
-                <p>Invoices: ${sales.length}</p>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                <div style="background:var(--success); color:white; padding:15px; border-radius:10px; text-align:center;">
+                    <h3>داهات</h3>
+                    <p>${totalSales.toLocaleString()} IQD</p>
+                </div>
+                <div style="background:var(--danger); color:white; padding:15px; border-radius:10px; text-align:center;">
+                    <h3>خەرجی</h3>
+                    <p>${totalExp.toLocaleString()} IQD</p>
+                </div>
+            </div>
+            <div style="background:var(--primary); color:white; padding:15px; border-radius:10px; text-align:center; margin-top:10px;">
+                <h3>سافی قازانج</h3>
+                <h2 style="font-size:24px;">${(totalSales - totalExp).toLocaleString()} IQD</h2>
             </div>`;
     }
 
     function changeLang(l) {
         localStorage.setItem('bizhar_lang', l);
-        const t = languages[l];
+        const t = languages[l] || languages['ku'];
         document.getElementById('main-html').dir = (l==='en'||l==='tr') ? 'ltr' : 'rtl';
         document.getElementById('t-new-sale').innerText = t.new_sale;
         document.getElementById('t-cust-label').innerText = t.cust;
@@ -313,8 +432,8 @@
         renderAll();
     }
 
-    function delInv(i) { if(confirm("Delete?")) { inv.splice(i,1); db.ref('/').set({i:inv, s:sales, c:invCounter}); } }
-    function delSale(i) { if(confirm("Delete?")) { sales.splice(i,1); db.ref('/').set({i:inv, s:sales, c:invCounter}); } }
+    function delInv(i) { if(confirm("ئەرێ دێ رەشکەی؟")) { inv.splice(i,1); db.ref('/').set({i:inv, s:sales, c:invCounter, e:expenses}); } }
+    function delSale(i) { if(confirm("ئەرێ دێ فاتورێ رەشکەی؟")) { sales.splice(i,1); db.ref('/').set({i:inv, s:sales, c:invCounter, e:expenses}); } }
     function showModal(id) { document.getElementById(id).style.display = 'flex'; }
     function closeModal(id) { document.getElementById(id).style.display = 'none'; stopScanner(); }
     function toggleDark() { document.body.classList.toggle('dark-mode'); }
