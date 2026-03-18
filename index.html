@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>BIZHAR COMPUTER | SMART ERP v3</title>
+    <title>BIZHAR COMPUTER | ULTIMATE ERP v5</title>
     
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
@@ -16,32 +16,43 @@
         body.dark-mode { --bg: #020617; --card: #1e293b; --text: #f1f5f9; --border: #334155; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Noto Sans Arabic', sans-serif; }
         body { background: var(--bg); color: var(--text); transition: 0.3s; padding-bottom: 50px; }
+        
+        #login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 10000; display: flex; align-items: center; justify-content: center; }
+        .login-card { background: var(--card); padding: 35px; border-radius: 25px; box-shadow: 0 20px 50px rgba(0,0,0,0.2); width: 90%; max-width: 420px; text-align: center; border: 1px solid var(--border); }
+        
         header { background: var(--card); height: 70px; padding: 0 20px; border-bottom: 2px solid var(--border); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
         .container { width: 100%; max-width: 1400px; margin: 20px auto; padding: 0 15px; display: grid; grid-template-columns: 1fr; gap: 20px; }
         @media (min-width: 992px) { .container { grid-template-columns: 420px 1fr; } }
         .card { background: var(--card); padding: 20px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
         input, select { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 12px; background: var(--bg); color: var(--text); margin-top: 8px; outline: none; transition: 0.2s; }
-        input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.2); }
-        .main-btn { width: 100%; padding: 14px; border: none; border-radius: 12px; font-weight: 700; background: var(--primary); color: white; margin-top: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; }
-        .main-btn:active { transform: scale(0.98); }
+        .main-btn { width: 100%; padding: 14px; border: none; border-radius: 12px; font-weight: 700; background: var(--primary); color: white; margin-top: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .table-wrap { background: var(--card); border-radius: 15px; overflow-x: auto; border: 1px solid var(--border); margin-top: 15px; }
-        table { width: 100%; border-collapse: collapse; min-width: 500px; }
+        table { width: 100%; border-collapse: collapse; min-width: 550px; }
         th, td { padding: 12px; border-bottom: 1px solid var(--border); text-align: inherit; }
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 9999; backdrop-filter: blur(5px); }
-        .modal-content { background: var(--card); padding: 25px; border-radius: 25px; width: 95%; max-width: 800px; max-height: 85vh; overflow-y: auto; }
-        .item-row { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: var(--bg); border-radius: 10px; margin-bottom: 5px; border-inline-start: 5px solid var(--primary); }
-        .stat-card { background: var(--bg); padding: 15px; border-radius: 15px; text-align: center; border: 1px solid var(--border); }
-        
-        /* Receipt Style */
-        #print-receipt { display: none; width: 80mm; padding: 5px; background: white; color: black; font-size: 12px; }
-        @media print { 
-            body * { visibility: hidden; } 
-            #print-receipt, #print-receipt * { visibility: visible; } 
-            #print-receipt { position: absolute; left: 0; top: 0; display: block; width: 100%; } 
-        }
+        .modal-content { background: var(--card); padding: 25px; border-radius: 25px; width: 95%; max-width: 850px; max-height: 85vh; overflow-y: auto; }
+        .item-row { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: var(--bg); border-radius: 12px; margin-bottom: 8px; border-inline-start: 6px solid var(--primary); }
+        #scanner-wrapper { display:none; margin-bottom:10px; background: #000; padding: 10px; border-radius: 20px; }
+        .search-box { position: relative; margin-bottom: 15px; }
+        .search-box input { padding-inline-start: 40px; }
+        .search-box i { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); opacity: 0.5; }
+        .badge-danger { background: rgba(239, 68, 68, 0.1); color: var(--danger); padding: 2px 8px; border-radius: 5px; font-size: 12px; }
+
+        #print-receipt { display: none; width: 80mm; padding: 10px; background: white; color: black; font-size: 13px; }
+        @media print { body * { visibility: hidden; } #print-receipt, #print-receipt * { visibility: visible; } #print-receipt { position: absolute; left: 0; top: 0; display: block; width: 100%; } }
     </style>
 </head>
 <body id="body-main">
+
+<div id="login-overlay">
+    <div class="login-card">
+        <h2 style="color:var(--primary); margin-bottom:20px;">BIZHAR COMPUTER</h2>
+        <input type="text" id="login-user" placeholder="User Name">
+        <input type="password" id="login-pass" placeholder="Password">
+        <button class="main-btn" onclick="checkLogin()">Login</button>
+        <p id="login-msg" style="color:var(--danger); margin-top:10px; font-size:14px;"></p>
+    </div>
+</div>
 
 <header>
     <div style="font-weight:900; font-size:22px; color:var(--primary);">BIZHAR COMPUTER</div>
@@ -58,40 +69,33 @@
                 <h3 id="t-new-sale">فرۆتنا نوی</h3>
                 <span id="next-inv-no" style="background:var(--primary); color:white; padding:5px 15px; border-radius:10px; font-weight:900;">#1</span>
             </div>
-
-            <div id="scanner-wrapper" style="display:none; margin-bottom:10px;">
-                <div id="reader" style="border-radius:15px; overflow:hidden;"></div>
-                <button class="main-btn" style="background:var(--danger);" onclick="stopScanner()">Stop</button>
-            </div>
-
+            <div id="scanner-wrapper"><div id="reader"></div><button class="main-btn" style="background:var(--danger);" onclick="stopScanner()">Stop</button></div>
             <label id="t-cust-label">ناڤێ کڕیار</label>
             <input type="text" id="i-cust" placeholder="...">
-
             <label style="margin-top:15px; display:block;" id="t-items-label">کەلوپەل</label>
             <div style="display:flex; gap:5px;">
                 <select id="i-select"></select>
-                <button onclick="addItemToSale()" class="main-btn" style="width:60px; margin:8px 0 0 0;"><i class="fa-solid fa-plus"></i></button>
-                <button onclick="startScanner('sale')" class="main-btn" style="width:60px; margin:8px 0 0 0; background:var(--text);"><i class="fa-solid fa-qrcode"></i></button>
+                <button onclick="addItemToSale()" class="main-btn" style="width:55px; margin-top:8px;"><i class="fa-solid fa-plus"></i></button>
+                <button onclick="startScanner('sale')" class="main-btn" style="width:55px; margin-top:8px; background:var(--text);"><i class="fa-solid fa-qrcode"></i></button>
             </div>
-
             <div id="selected-items-area" style="margin-top:15px; max-height: 250px; overflow-y: auto;"></div>
-
-            <div style="margin-top:15px; border-top: 2px dashed var(--border); padding-top:15px;">
-                <label id="t-disc-label">داشکاندن</label>
-                <input type="number" id="i-disc" value="0" oninput="calcFinal()">
-            </div>
-
-            <div style="margin-top:15px; padding:20px; background:var(--primary); color:white; border-radius:15px; text-align:center;">
+            <label id="t-disc-label" style="margin-top:10px; display:block;">داشکاندن</label>
+            <input type="number" id="i-disc" value="0" oninput="calcFinal()">
+            <div style="margin-top:15px; padding:15px; background:var(--primary); color:white; border-radius:15px; text-align:center;">
                 <small id="t-total-label">کۆمێ گشتی</small>
                 <h2 id="f-total" style="font-size:28px;">0</h2>
             </div>
-            <button class="main-btn" onclick="saveSale()"><i class="fa-solid fa-print"></i> <span id="t-save-btn">تۆمارکرن و پرێنت</span></button>
+            <button class="main-btn" onclick="saveSale()"><i class="fa-solid fa-print"></i> <span id="t-save-btn">تۆمار و پرێنت</span></button>
         </div>
     </div>
 
     <div class="main">
         <div class="card">
             <h3 id="t-invoice-list">لیستا فاتورەیان</h3>
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="sale-search" placeholder="..." oninput="renderAll()">
+            </div>
             <div class="table-wrap">
                 <table>
                     <thead><tr><th>#</th><th id="th-cust">کڕیار</th><th id="th-total">کۆم</th><th id="th-date">رێکەفت</th><th>X</th></tr></thead>
@@ -103,22 +107,16 @@
 </div>
 
 <div class="modal" id="menu-modal" onclick="closeModal('menu-modal')">
-    <div class="modal-content" style="max-width:380px;" onclick="event.stopPropagation()">
+    <div class="modal-content" style="max-width:400px;" onclick="event.stopPropagation()">
         <h3 id="t-settings">ڕێکخستن</h3>
-        
-        <label id="t-lang-select" style="font-size:12px; opacity:0.7;">زمان (Language)</label>
-        <select id="lang-changer" onchange="changeLang(this.value)" style="margin-bottom:20px; background:var(--primary); color:white; border:none;">
-            <option value="ku">Kurdî (کوردی)</option>
-            <option value="ar">العربية</option>
-            <option value="en">English</option>
-            <option value="tr">Türkçe</option>
-            <option value="fa">فارسی</option>
+        <select id="lang-changer" onchange="changeLang(this.value)" style="margin-bottom:15px; background:var(--primary); color:white; border:none;">
+            <option value="ku">Kurdî</option><option value="ar">العربية</option><option value="en">English</option><option value="tr">Türkçe</option><option value="fa">فارسی</option>
         </select>
-
-        <button class="main-btn" onclick="showModal('inv-modal')"><i class="fa-solid fa-boxes-stacked"></i> <span id="t-btn-inv">کۆگە</span></button>
-        <button class="main-btn" onclick="showModal('debt-modal')" style="background:var(--warning);"><i class="fa-solid fa-hand-holding-dollar"></i> <span id="t-btn-debt">قەرز</span></button>
+        <button class="main-btn" onclick="openProtected('inv-modal')"><i class="fa-solid fa-boxes-stacked"></i> <span id="t-btn-inv">کۆگە</span></button>
+        <button class="main-btn" onclick="showModal('debt-modal')" style="background:var(--warning); color:black;"><i class="fa-solid fa-hand-holding-dollar"></i> <span id="t-btn-debt">قەرزان</span></button>
         <button class="main-btn" onclick="showModal('exp-modal')" style="background:var(--danger);"><i class="fa-solid fa-wallet"></i> <span id="t-btn-exp">خەرجی</span></button>
-        <button class="main-btn" onclick="openDailyReport()" style="background:#8b5cf6;"><i class="fa-solid fa-chart-line"></i> <span id="t-btn-rep">ڕاپۆرت</span></button>
+        <button class="main-btn" onclick="openProtected('rep-modal')" style="background:#8b5cf6;"><i class="fa-solid fa-chart-line"></i> <span id="t-btn-rep">ڕاپۆرت</span></button>
+        <button class="main-btn" onclick="logout()" style="background:#475569; margin-top:10px;"><i class="fa-solid fa-power-off"></i> Logout</button>
     </div>
 </div>
 
@@ -127,81 +125,178 @@
         <h3 id="t-inv-title">کۆگە</h3>
         <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap:10px; margin:15px 0;">
             <input type="text" id="a-name" placeholder="Name">
-            <input type="text" id="a-code" placeholder="QR Code">
+            <div style="display:flex; gap:5px;"><input type="text" id="a-code" placeholder="QR Code"><button onclick="startScanner('inv')" class="main-btn" style="width:50px; margin-top:8px; background:var(--text);"><i class="fa-solid fa-camera"></i></button></div>
             <input type="number" id="a-cost" placeholder="Price">
             <input type="number" id="a-qty" placeholder="Qty">
         </div>
-        <button class="main-btn" onclick="addInv()" id="t-add-inv-btn">تۆمار بکە</button>
-        <div class="table-wrap"><table><thead><tr><th id="th-n">ناڤ</th><th id="th-p">بها</th><th id="th-q">دانە</th><th>X</th></tr></thead><tbody id="inv-table"></tbody></table></div>
+        <button class="main-btn" onclick="addInv()">زێدەکرن</button>
+        <div class="table-wrap"><table><thead><tr><th>ناڤ</th><th>بها</th><th>دانە</th><th>X</th></tr></thead><tbody id="inv-table"></tbody></table></div>
     </div>
 </div>
 
+<div class="modal" id="debt-modal" onclick="closeModal('debt-modal')"><div class="modal-content" onclick="event.stopPropagation()"><h3 id="t-debt-title">قەرزان</h3><div class="table-wrap"><table><thead><tr><th>کڕیار</th><th>کۆمێ قەرزی</th><th>رێکەفت</th></tr></thead><tbody id="debt-table"></tbody></table></div></div></div>
+<div class="modal" id="exp-modal" onclick="closeModal('exp-modal')"><div class="modal-content" onclick="event.stopPropagation()"><h3 id="t-exp-title">خەرجی</h3><div class="table-wrap"><table><thead><tr><th>خەرجی</th><th>بها</th><th>رێکەفت</th></tr></thead><tbody id="exp-table"></tbody></table></div></div></div>
+<div class="modal" id="rep-modal" onclick="closeModal('rep-modal')"><div class="modal-content" onclick="event.stopPropagation()"><h3 id="t-rep-title">ڕاپۆرت</h3><div id="rep-summary" style="padding:20px; background:var(--bg); border-radius:15px; margin-top:10px;"></div></div></div>
+
 <div id="print-receipt">
-    <h2 style="text-align:center;">BIZHAR COMPUTER</h2>
-    <p style="text-align:center;" id="p-inv-title">وەسڵا فرۆتنێ: #<span id="r-inv-no"></span></p>
-    <hr>
-    <p><span id="p-cust-name">کڕیار</span>: <span id="r-cust"></span></p>
-    <p><span id="p-date-name">رێکەفت</span>: <span id="r-date"></span></p>
-    <table style="width:100%; border-top:1px solid #000; margin-top:10px;">
-        <tbody id="r-items-list"></tbody>
-    </table>
-    <hr>
-    <h3 style="text-align:right;"><span id="p-total-name">کۆم</span>: <span id="r-final"></span> <span class="cur-text">د.ع</span></h3>
-    <p style="text-align:center; margin-top:20px; font-size:10px;">سوپاس بۆ سەرەدانا وە</p>
+    <div style="text-align:center; border-bottom:2px solid #000; padding-bottom:5px;">
+        <h2 style="margin:0;">BIZHAR COMPUTER</h2>
+        <p>وەسڵا فرۆتنێ: #<span id="r-inv-no"></span></p>
+    </div>
+    <div style="margin:10px 0; font-size:12px;">
+        <p><b>کڕیار:</b> <span id="r-cust"></span></p>
+        <p><b>رێکەفت:</b> <span id="r-date"></span></p>
+        <p><b>دەم:</b> <span id="r-time"></span></p>
+    </div>
+    <table style="width:100%; border-top:1px solid #000;"><tbody id="r-items-list"></tbody></table>
+    <div style="border-top:1px solid #000; padding-top:5px; text-align:right;"><h3>کۆم: <span id="r-final"></span> د.ع</h3></div>
+    <div style="text-align:center; margin-top:15px; font-size:10px;">سوپاس بۆ سەرەدانا وە</div>
 </div>
 
 <script>
+    const APP_AUTH = { user: "BIZHAR", pass: "07503653355" };
+    const SECURE_PASS = "07503644666";
+
     const languages = {
-        ku: {
-            new_sale: "فرۆتنا نوی", cust: "ناڤێ کڕیار", items: "کەلوپەل", disc: "داشکاندن", 
-            total: "کۆمێ گشتی", save: "تۆمارکرن و پرێنت", inv_list: "لیستا فاتورەیان",
-            settings: "ڕێکخستنێن گشتی", lang: "زمان", inventory: "کۆگە", debt: "قەرز",
-            exp: "خەرجی", report: "ڕاپۆرت", currency: "د.ع", add: "تۆمار بکە",
-            name: "ناڤ", price: "بها", qty: "دانە", date: "رێکەفت", customer: "کڕیار",
-            inv_no: "ژمارا فاتورێ", thanks: "سوپاس بۆ سەرەدانا وە"
-        },
-        ar: {
-            new_sale: "بيع جديد", cust: "اسم الزبون", items: "المواد", disc: "خصم", 
-            total: "المجموع الكلي", save: "حفظ وطباعة", inv_list: "قائمة الفواتير",
-            settings: "الإعدادات", lang: "اللغة", inventory: "المخزن", debt: "الديون",
-            exp: "المصاريف", report: "التقرير", currency: "د.ع", add: "إضافة",
-            name: "الاسم", price: "السعر", qty: "العدد", date: "التاريخ", customer: "الزبون",
-            inv_no: "رقم الفاتورة", thanks: "شكراً لزيارتكم"
-        },
-        en: {
-            new_sale: "New Sale", cust: "Customer", items: "Items", disc: "Discount", 
-            total: "Total", save: "Save & Print", inv_list: "Invoices",
-            settings: "Settings", lang: "Language", inventory: "Inventory", debt: "Debt",
-            exp: "Expenses", report: "Report", currency: "IQD", add: "Save",
-            name: "Name", price: "Price", qty: "Qty", date: "Date", customer: "Client",
-            inv_no: "Invoice #", thanks: "Thank you for visiting"
-        },
-        tr: {
-            new_sale: "Yeni Satış", cust: "Müşteri", items: "Ürünler", disc: "İndirim", 
-            total: "Toplam", save: "Kaydet & Yazdır", inv_list: "Faturalar",
-            settings: "Ayarlar", lang: "Dil", inventory: "Stok", debt: "Borçlar",
-            exp: "Giderler", report: "Rapor", currency: "IQD", add: "Ekle",
-            name: "Ad", price: "Fiyat", qty: "Adet", date: "Tarih", customer: "Müşteri",
-            inv_no: "Fatura No", thanks: "Bizi tercih ettiğiniz için teşekkürler"
-        },
-        fa: {
-            new_sale: "فروش جدید", cust: "نام مشتری", items: "کالاها", disc: "تخفیف", 
-            total: "جمع کل", save: "ثبت و چاپ", inv_list: "فاکتورها",
-            settings: "تنظیمات", lang: "زبان", inventory: "انبار", debt: "بدهی",
-            exp: "هزینه", report: "گزارش", currency: "دینار", add: "ثبت",
-            name: "نام", price: "قیمت", qty: "تعداد", date: "تاریخ", customer: "مشتری",
-            inv_no: "شماره فاکتور", thanks: "از خرید شما متشکریم"
-        }
+        ku: { new_sale: "فرۆتنا نوی", cust: "ناڤێ کڕیار", items: "کەلوپەل", disc: "داشکاندن", total: "کۆمێ گشتی", save: "تۆمار و پرێنت", inv_list: "لیستا فاتورەیان", inventory: "کۆگە", debt: "قەرزان", exp: "خەرجی", report: "ڕاپۆرت", settings: "ڕێکخستن", search: "گەڕیان ب ناڤ یان ژمارە..." },
+        ar: { new_sale: "بيع جديد", cust: "اسم الزبون", items: "المواد", disc: "خصم", total: "المجموع", save: "حفظ وطباعة", inv_list: "الفواتير", inventory: "المخزن", debt: "الديون", exp: "المصاريف", report: "التقرير", settings: "الإعدادات", search: "البحث بالاسم او الرقم..." },
+        en: { new_sale: "New Sale", cust: "Customer", items: "Items", disc: "Discount", total: "Total", save: "Save & Print", inv_list: "Invoices", inventory: "Inventory", debt: "Debts", exp: "Expenses", report: "Reports", settings: "Settings", search: "Search by name or number..." },
+        tr: { new_sale: "Yeni Satış", cust: "Müşteri", items: "Ürünler", disc: "İndirim", total: "Toplam", save: "Kaydet & Yazdır", inv_list: "Faturalar", inventory: "Stok", debt: "Borçlar", exp: "Giderler", report: "Raporlar", settings: "Ayarlar", search: "İsim veya numara ile ara..." },
+        fa: { new_sale: "فروش جدید", cust: "مشتری", items: "کالاها", disc: "تخفیف", total: "جمع کل", save: "ثبت و چاپ", inv_list: "فاکتورها", inventory: "انبار", debt: "بدهی‌ها", exp: "هزینه‌ها", report: "گزارشات", settings: "تنظیمات", search: "جستجو با نام یا شماره..." }
     };
+
+    const firebaseConfig = { databaseURL: "https://bizhar-pos-default-rtdb.firebaseio.com/" };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    let inv=[], sales=[], currentSaleItems=[], invCounter=1, html5QrCode;
+
+    function checkLogin() {
+        const u = document.getElementById('login-user').value;
+        const p = document.getElementById('login-pass').value;
+        if(u === APP_AUTH.user && p === APP_AUTH.pass) {
+            localStorage.setItem('bizhar_login', 'true');
+            document.getElementById('login-overlay').style.display = 'none';
+        } else {
+            document.getElementById('login-msg').innerText = "Wrong User or Password!";
+        }
+    }
+
+    function logout() { localStorage.removeItem('bizhar_login'); location.reload(); }
+
+    function openProtected(modalId) {
+        const p = prompt("Password:");
+        if(p === SECURE_PASS) {
+            if(modalId === 'rep-modal') updateReport();
+            showModal(modalId);
+        } else if(p !== null) alert("Wrong Password!");
+    }
+
+    db.ref('/').on('value', snap => {
+        const d = snap.val() || {};
+        inv = d.i || []; sales = d.s || []; invCounter = d.c || (sales.length + 1);
+        document.getElementById('next-inv-no').innerText = "#" + invCounter;
+        renderAll();
+    });
+
+    function startScanner(mode) {
+        document.getElementById('scanner-wrapper').style.display = 'block';
+        html5QrCode = new Html5Qrcode("reader");
+        html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, (txt) => {
+            if (mode==='sale') {
+                const itm = inv.find(x => x.code === txt);
+                if(itm && parseInt(itm.qty) > 0) { currentSaleItems.push({...itm}); renderCurrentSale(); }
+            } else { document.getElementById('a-code').value = txt; stopScanner(); }
+        });
+    }
+
+    function stopScanner() { if(html5QrCode) html5QrCode.stop().then(()=> document.getElementById('scanner-wrapper').style.display='none'); }
+
+    function addItemToSale() {
+        const name = document.getElementById('i-select').value;
+        const itm = inv.find(x => x.name === name);
+        if(itm && parseInt(itm.qty) > 0) { currentSaleItems.push({...itm}); renderCurrentSale(); }
+        else if(itm) alert("Out of stock!");
+    }
+
+    function renderCurrentSale() {
+        const area = document.getElementById('selected-items-area'); area.innerHTML = '';
+        currentSaleItems.forEach((itm, idx) => {
+            area.innerHTML += `<div class="item-row"><div><b>${itm.name}</b><br><small>${parseInt(itm.cost).toLocaleString()}</small></div><i class="fa-solid fa-circle-xmark" onclick="removeItem(${idx})" style="color:var(--danger); cursor:pointer;"></i></div>`;
+        });
+        calcFinal();
+    }
+
+    function removeItem(idx) { currentSaleItems.splice(idx,1); renderCurrentSale(); }
+
+    function calcFinal() {
+        let sub = currentSaleItems.reduce((a, b) => a + parseFloat(b.cost), 0);
+        let d = parseFloat(document.getElementById('i-disc').value) || 0;
+        let total = Math.max(0, sub - d);
+        document.getElementById('f-total').innerText = total.toLocaleString();
+        return total;
+    }
+
+    function saveSale() {
+        if(currentSaleItems.length === 0) return;
+        const now = new Date();
+        const saleData = {
+            invNo: invCounter,
+            cust: document.getElementById('i-cust').value.trim() || "Guest",
+            items: currentSaleItems,
+            total: calcFinal(),
+            date: now.toLocaleDateString('en-GB'),
+            time: now.toLocaleTimeString('en-GB', {hour12:false})
+        };
+        currentSaleItems.forEach(si => { let idx = inv.findIndex(x => x.name===si.name); if(idx>-1) inv[idx].qty = parseInt(inv[idx].qty) - 1; });
+        sales.unshift(saleData); invCounter++;
+        db.ref('/').set({ i: inv, s: sales, c: invCounter });
+
+        document.getElementById('r-inv-no').innerText = saleData.invNo;
+        document.getElementById('r-cust').innerText = saleData.cust;
+        document.getElementById('r-date').innerText = saleData.date;
+        document.getElementById('r-time').innerText = saleData.time;
+        const rl = document.getElementById('r-items-list'); rl.innerHTML = '';
+        saleData.items.forEach(i => rl.innerHTML += `<tr><td>${i.name}</td><td align="left">${parseInt(i.cost).toLocaleString()}</td></tr>`);
+        document.getElementById('r-final').innerText = saleData.total.toLocaleString();
+
+        setTimeout(() => { window.print(); currentSaleItems=[]; document.getElementById('i-cust').value=""; renderCurrentSale(); }, 500);
+    }
+
+    function renderAll() {
+        const query = document.getElementById('sale-search').value.toLowerCase();
+        const sel = document.getElementById('i-select'); sel.innerHTML = '<option value="">...</option>';
+        inv.forEach(x => { if(parseInt(x.qty) > 0) sel.innerHTML += `<option value="${x.name}">${x.name} (${parseInt(x.cost).toLocaleString()})</option>`; });
+        
+        const sl = document.getElementById('sales-list'); sl.innerHTML = '';
+        sales.filter(s => s.cust.toLowerCase().includes(query) || s.invNo.toString().includes(query)).forEach((s, idx) => {
+            sl.innerHTML += `<tr><td>#${s.invNo}</td><td>${s.cust}</td><td>${s.total.toLocaleString()}</td><td>${s.date}</td><td><i onclick="delSale(${idx})" class="fa-solid fa-trash" style="color:var(--danger); cursor:pointer;"></i></td></tr>`;
+        });
+
+        const il = document.getElementById('inv-table'); il.innerHTML = '';
+        inv.forEach((x, idx) => {
+            const low = parseInt(x.qty) < 5 ? '<span class="badge-danger">Low</span>' : '';
+            il.innerHTML += `<tr><td>${x.name}</td><td>${parseInt(x.cost).toLocaleString()}</td><td>${x.qty} ${low}</td><td><i onclick="delInv(${idx})" class="fa-solid fa-trash" style="color:var(--danger); cursor:pointer;"></i></td></tr>`;
+        });
+    }
+
+    function addInv() {
+        const n = document.getElementById('a-name').value, c = document.getElementById('a-code').value, p = document.getElementById('a-cost').value, q = document.getElementById('a-qty').value;
+        if(n && p && q) { inv.push({name:n, code:c, cost:p, qty:q}); db.ref('/').set({i:inv, s:sales, c:invCounter}); document.getElementById('a-name').value=''; document.getElementById('a-code').value=''; document.getElementById('a-cost').value=''; document.getElementById('a-qty').value=''; }
+    }
+
+    function updateReport() {
+        const total = sales.reduce((a, b) => a + b.total, 0);
+        document.getElementById('rep-summary').innerHTML = `
+            <div style="background:var(--primary); color:white; padding:15px; border-radius:10px; text-align:center;">
+                <h3>Total Sales: ${total.toLocaleString()}</h3>
+                <p>Invoices: ${sales.length}</p>
+            </div>`;
+    }
 
     function changeLang(l) {
         localStorage.setItem('bizhar_lang', l);
         const t = languages[l];
-        const html = document.getElementById('main-html');
-        html.dir = (l === 'en' || l === 'tr') ? 'ltr' : 'rtl';
-        html.lang = l;
-
-        // UI Updates
+        document.getElementById('main-html').dir = (l==='en'||l==='tr') ? 'ltr' : 'rtl';
         document.getElementById('t-new-sale').innerText = t.new_sale;
         document.getElementById('t-cust-label').innerText = t.cust;
         document.getElementById('t-items-label').innerText = t.items;
@@ -209,145 +304,23 @@
         document.getElementById('t-total-label').innerText = t.total;
         document.getElementById('t-save-btn').innerText = t.save;
         document.getElementById('t-invoice-list').innerText = t.inv_list;
-        document.getElementById('t-settings').innerText = t.settings;
         document.getElementById('t-btn-inv').innerText = t.inventory;
         document.getElementById('t-btn-debt').innerText = t.debt;
         document.getElementById('t-btn-exp').innerText = t.exp;
         document.getElementById('t-btn-rep').innerText = t.report;
-        document.getElementById('th-cust').innerText = t.customer;
-        document.getElementById('th-total').innerText = t.total;
-        document.getElementById('th-date').innerText = t.date;
-        document.getElementById('t-inv-title').innerText = t.inventory;
-        document.getElementById('th-n').innerText = t.name;
-        document.getElementById('th-p').innerText = t.price;
-        document.getElementById('th-q').innerText = t.qty;
-        document.getElementById('t-add-inv-btn').innerText = t.add;
-
-        // Print Text Updates
-        document.getElementById('p-cust-name').innerText = t.customer;
-        document.getElementById('p-date-name').innerText = t.date;
-        document.getElementById('p-total-name').innerText = t.total;
-        document.querySelectorAll('.cur-text').forEach(el => el.innerText = t.currency);
-
+        document.getElementById('t-settings').innerText = t.settings;
+        document.getElementById('sale-search').placeholder = t.search;
         renderAll();
     }
 
-    // --- Firebase Logic ---
-    const firebaseConfig = { databaseURL: "https://bizhar-pos-default-rtdb.firebaseio.com/" };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-    
-    let inv = [], sales = [], debts = [], exps = [], currentSaleItems = [], invCounter = 1;
-
-    db.ref('/').on('value', snap => {
-        const d = snap.val() || {};
-        inv = d.i || []; sales = d.s || []; debts = d.d || []; exps = d.e || [];
-        invCounter = d.c || (sales.length + 1);
-        document.getElementById('next-inv-no').innerText = "#" + invCounter;
-        renderAll();
-    });
-
-    function addItemToSale() {
-        const name = document.getElementById('i-select').value;
-        const item = inv.find(x => x.name === name);
-        if(item && item.qty > 0) { 
-            currentSaleItems.push({...item}); 
-            renderCurrentSale(); 
-        }
-    }
-
-    function renderCurrentSale() {
-        const area = document.getElementById('selected-items-area'); area.innerHTML = '';
-        currentSaleItems.forEach((item, idx) => {
-            area.innerHTML += `<div class="item-row"><span>${item.name} (${parseInt(item.cost).toLocaleString()})</span><i class="fa-solid fa-circle-xmark" onclick="removeItemFromSale(${idx})" style="color:var(--danger); cursor:pointer;"></i></div>`;
-        });
-        calcFinal();
-    }
-
-    function removeItemFromSale(idx) { currentSaleItems.splice(idx,1); renderCurrentSale(); }
-
-    function calcFinal() {
-        const l = localStorage.getItem('bizhar_lang') || 'ku';
-        let subtotal = currentSaleItems.reduce((a, b) => a + parseFloat(b.cost), 0);
-        let disc = parseFloat(document.getElementById('i-disc').value) || 0;
-        let total = Math.max(0, subtotal - disc);
-        document.getElementById('f-total').innerText = total.toLocaleString() + " " + languages[l].currency;
-        return total;
-    }
-
-    function saveSale() {
-        if(currentSaleItems.length === 0) return;
-        const l = localStorage.getItem('bizhar_lang') || 'ku';
-        let total = calcFinal();
-        let custName = document.getElementById('i-cust').value.trim() || (l === 'en' ? "Guest" : "کڕیارێ ئاسایی");
-        
-        let saleData = {
-            invNo: invCounter,
-            cust: custName,
-            items: currentSaleItems,
-            total: total,
-            date: new Date().toLocaleDateString()
-        };
-
-        // Inventory Update
-        currentSaleItems.forEach(si => {
-            let idx = inv.findIndex(x => x.name === si.name);
-            if(idx > -1) inv[idx].qty--;
-        });
-
-        sales.unshift(saleData); invCounter++;
-        db.ref('/').set({ i: inv, s: sales, d: debts, e: exps, c: invCounter });
-
-        // Setup Printing
-        document.getElementById('r-inv-no').innerText = saleData.invNo;
-        document.getElementById('r-cust').innerText = saleData.cust;
-        document.getElementById('r-date').innerText = saleData.date;
-        const rl = document.getElementById('r-items-list'); rl.innerHTML = '';
-        saleData.items.forEach(i => rl.innerHTML += `<tr><td>${i.name}</td><td align="right">${parseInt(i.cost).toLocaleString()}</td></tr>`);
-        document.getElementById('r-final').innerText = total.toLocaleString();
-
-        setTimeout(() => { 
-            window.print(); 
-            currentSaleItems = []; 
-            document.getElementById('i-cust').value = ""; 
-            renderCurrentSale(); 
-        }, 500);
-    }
-
-    function renderAll() {
-        const l = localStorage.getItem('bizhar_lang') || 'ku';
-        const cur = languages[l].currency;
-
-        const sel = document.getElementById('i-select'); sel.innerHTML = '<option value="">...</option>';
-        inv.forEach(x => { if(x.qty > 0) sel.innerHTML += `<option value="${x.name}">${x.name} (${parseInt(x.cost).toLocaleString()} ${cur})</option>`; });
-
-        const sl = document.getElementById('sales-list'); sl.innerHTML = '';
-        sales.slice(0, 15).forEach((s, idx) => {
-            sl.innerHTML += `<tr><td>#${s.invNo}</td><td>${s.cust}</td><td>${s.total.toLocaleString()}</td><td>${s.date}</td><td><i onclick="delSale(${idx})" class="fa-solid fa-trash" style="color:var(--danger); cursor:pointer;"></i></td></tr>`;
-        });
-
-        const il = document.getElementById('inv-table'); il.innerHTML = '';
-        inv.forEach((x, idx) => {
-            il.innerHTML += `<tr><td>${x.name}</td><td>${parseInt(x.cost).toLocaleString()}</td><td>${x.qty}</td><td><i onclick="delInv(${idx})" class="fa-solid fa-trash" style="color:var(--danger); cursor:pointer;"></i></td></tr>`;
-        });
-    }
-
-    function addInv() {
-        const n = document.getElementById('a-name').value, c = document.getElementById('a-code').value, p = document.getElementById('a-cost').value, q = document.getElementById('a-qty').value;
-        if(n && p && q) { 
-            inv.push({name:n, code:c, cost:p, qty:q}); 
-            db.ref('/').set({i:inv, s:sales, d:debts, e:exps, c:invCounter});
-            document.getElementById('a-name').value=''; document.getElementById('a-cost').value=''; document.getElementById('a-qty').value='';
-        }
-    }
-
-    function delInv(i) { if(confirm("Delete?")) { inv.splice(i,1); db.ref('/').set({i:inv, s:sales, d:debts, e:exps, c:invCounter}); } }
-    function delSale(i) { if(confirm("Delete?")) { sales.splice(i,1); db.ref('/').set({i:inv, s:sales, d:debts, e:exps, c:invCounter}); } }
+    function delInv(i) { if(confirm("Delete?")) { inv.splice(i,1); db.ref('/').set({i:inv, s:sales, c:invCounter}); } }
+    function delSale(i) { if(confirm("Delete?")) { sales.splice(i,1); db.ref('/').set({i:inv, s:sales, c:invCounter}); } }
     function showModal(id) { document.getElementById(id).style.display = 'flex'; }
-    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; stopScanner(); }
     function toggleDark() { document.body.classList.toggle('dark-mode'); }
 
     window.onload = () => {
+        if(localStorage.getItem('bizhar_login') === 'true') document.getElementById('login-overlay').style.display = 'none';
         const savedLang = localStorage.getItem('bizhar_lang') || 'ku';
         document.getElementById('lang-changer').value = savedLang;
         changeLang(savedLang);
