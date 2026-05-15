@@ -1,449 +1,152 @@
 <!DOCTYPE html>
-<html lang="ku" dir="rtl" id="main-html">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>BIZHAR COMPUTER | ULTIMATE ERP v5</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#1b2735">
     
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
-    <script src="https://unpkg.com/html5-qrcode"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <title>Dam Game</title>
     
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;700;900&display=swap');
-        :root { --bg: #f8fafc; --card: #ffffff; --text: #0f172a; --primary: #0284c7; --border: #cbd5e1; --success: #10b981; --danger: #ef4444; --warning: #f59e0b; }
-        body.dark-mode { --bg: #020617; --card: #1e293b; --text: #f1f5f9; --border: #334155; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Noto Sans Arabic', sans-serif; }
-        body { background: var(--bg); color: var(--text); transition: 0.3s; padding-bottom: 50px; }
-        
-        #login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 10000; display: flex; align-items: center; justify-content: center; }
-        .login-card { background: var(--card); padding: 35px; border-radius: 25px; box-shadow: 0 20px 50px rgba(0,0,0,0.2); width: 90%; max-width: 420px; text-align: center; border: 1px solid var(--border); }
-        
-        header { background: var(--card); height: 70px; padding: 0 20px; border-bottom: 2px solid var(--border); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
-        .container { width: 100%; max-width: 1400px; margin: 20px auto; padding: 0 15px; display: grid; grid-template-columns: 1fr; gap: 20px; }
-        @media (min-width: 992px) { .container { grid-template-columns: 420px 1fr; } }
-        .card { background: var(--card); padding: 20px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        input, select { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 12px; background: var(--bg); color: var(--text); margin-top: 8px; outline: none; transition: 0.2s; }
-        .main-btn { width: 100%; padding: 14px; border: none; border-radius: 12px; font-weight: 700; background: var(--primary); color: white; margin-top: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .table-wrap { background: var(--card); border-radius: 15px; overflow-x: auto; border: 1px solid var(--border); margin-top: 15px; }
-        table { width: 100%; border-collapse: collapse; min-width: 550px; }
-        th, td { padding: 12px; border-bottom: 1px solid var(--border); text-align: inherit; }
-        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 9999; backdrop-filter: blur(5px); }
-        .modal-content { background: var(--card); padding: 25px; border-radius: 25px; width: 95%; max-width: 850px; max-height: 85vh; overflow-y: auto; }
-        .item-row { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: var(--bg); border-radius: 12px; margin-bottom: 8px; border-inline-start: 6px solid var(--primary); }
-        #scanner-wrapper { display:none; margin-bottom:10px; background: #000; padding: 10px; border-radius: 20px; }
-        .search-box { position: relative; margin-bottom: 15px; }
-        .search-box input { padding-inline-start: 40px; }
-        .search-box i { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); opacity: 0.5; }
-        .badge-danger { background: rgba(239, 68, 68, 0.1); color: var(--danger); padding: 2px 8px; border-radius: 5px; font-size: 12px; }
-
-        #print-receipt { display: none; width: 80mm; padding: 10px; background: white; color: black; font-size: 13px; }
-        @media print { body * { visibility: hidden; } #print-receipt, #print-receipt * { visibility: visible; } #print-receipt { position: absolute; left: 0; top: 0; display: block; width: 100%; } }
-    </style>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="https://i.postimg.cc/gcZg7rDq/IMG-7635.jpg" type="image/jpeg">
+    <link rel="apple-touch-icon" href="https://i.postimg.cc/gcZg7rDq/IMG-7635.jpg">
 </head>
-<body id="body-main">
+<body data-theme="neon">
 
-<div id="login-overlay">
-    <div class="login-card">
-        <h2 style="color:var(--primary); margin-bottom:20px;">BIZHAR COMPUTER</h2>
-        <input type="text" id="login-user" placeholder="User Name">
-        <input type="password" id="login-pass" placeholder="Password">
-        <button class="main-btn" onclick="checkLogin()">Login</button>
-        <p id="login-msg" style="color:var(--danger); margin-top:10px; font-size:14px;"></p>
-    </div>
-</div>
+    <div class="game-wrapper">
+        <h1 data-i18n="appTitle">یاریا دامانێ</h1>
 
-<header>
-    <div style="font-weight:900; font-size:22px; color:var(--primary);">BIZHAR COMPUTER</div>
-    <div style="display:flex; gap:15px;">
-        <button onclick="toggleDark()" style="background:none; border:none; font-size:22px; color:var(--text); cursor:pointer;"><i class="fa-solid fa-moon"></i></button>
-        <button onclick="showModal('menu-modal')" style="background:none; border:none; font-size:22px; color:var(--text); cursor:pointer;"><i class="fa-solid fa-bars-staggered"></i></button>
-    </div>
-</header>
-
-<div class="container">
-    <div class="side">
-        <div class="card">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                <h3 id="t-new-sale">فرۆتنا نوی</h3>
-                <span id="next-inv-no" style="background:var(--primary); color:white; padding:5px 15px; border-radius:10px; font-weight:900;">#1</span>
+        <div class="score-board">
+            <div class="score p1-score">
+                <span data-i18n="player1">یاریزان ١</span>: <span id="score1">0</span>
+                <div class="timer" id="timer1"></div>
             </div>
-            <div id="scanner-wrapper"><div id="reader"></div><button class="main-btn" style="background:var(--danger);" onclick="stopScanner()">Stop</button></div>
             
-            <label id="t-cust-label">ناڤێ کڕیار</label>
-            <input type="text" id="i-cust" placeholder="...">
+            <div id="center-action-area">
+                <button id="menu-btn" onclick="toggleMenu()" data-i18n="menuBtn">⚙️ مینیو</button>
+                <button id="start-btn" onclick="startGame()" data-i18n="startBtn">▶ دەستپێکرن</button>
+            </div>
             
-            <label style="margin-top:15px; display:block;">جۆرێ پارەدانێ</label>
-            <select id="i-pay-type" onchange="calcFinal()">
-                <option value="cash">نەقد (Cash)</option>
-                <option value="debt">قیست (Installment %40)</option>
-            </select>
-
-            <label style="margin-top:15px; display:block;" id="t-items-label">کەلوپەل</label>
-            <div style="display:flex; gap:5px;">
-                <select id="i-select"></select>
-                <button onclick="addItemToSale()" class="main-btn" style="width:55px; margin-top:8px;"><i class="fa-solid fa-plus"></i></button>
-                <button onclick="startScanner('sale')" class="main-btn" style="width:55px; margin-top:8px; background:var(--text);"><i class="fa-solid fa-qrcode"></i></button>
-            </div>
-
-            <div id="selected-items-area" style="margin-top:15px; max-height: 250px; overflow-y: auto;"></div>
-            
-            <label id="t-disc-label" style="margin-top:10px; display:block;">داشکاندن (تنێ بۆ نەقد)</label>
-            <input type="number" id="i-disc" value="0" oninput="calcFinal()">
-
-            <div style="margin-top:15px; padding:15px; background:var(--primary); color:white; border-radius:15px; text-align:center;">
-                <small id="t-total-label">کۆمێ گشتی</small>
-                <h2 id="f-total" style="font-size:28px;">0</h2>
-            </div>
-            <button class="main-btn" onclick="saveSale()"><i class="fa-solid fa-print"></i> <span id="t-save-btn">تۆمار و پرێنت</span></button>
-        </div>
-    </div>
-
-    <div class="main">
-        <div class="card">
-            <h3 id="t-invoice-list">لیستا فاتورەیان</h3>
-            <div class="search-box">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" id="sale-search" placeholder="..." oninput="renderAll()">
-            </div>
-            <div class="table-wrap">
-                <table>
-                    <thead><tr><th>#</th><th id="th-cust">کڕیار</th><th>جۆر</th><th id="th-total">کۆم</th><th id="th-date">رێکەفت</th><th>X</th></tr></thead>
-                    <tbody id="sales-list"></tbody>
-                </table>
+            <div class="score p2-score">
+                <span data-i18n="player2">یاریزان ٢</span>: <span id="score2">0</span>
+                <div class="timer" id="timer2"></div>
             </div>
         </div>
-    </div>
-</div>
-
-<div class="modal" id="menu-modal" onclick="closeModal('menu-modal')">
-    <div class="modal-content" style="max-width:400px;" onclick="event.stopPropagation()">
-        <h3 id="t-settings">ڕێکخستن</h3>
-        <select id="lang-changer" onchange="changeLang(this.value)" style="margin-bottom:15px; background:var(--primary); color:white; border:none;">
-            <option value="ku">Kurdî</option><option value="ar">العربية</option><option value="en">English</option><option value="tr">Türkçe</option><option value="fa">فارسی</option>
-        </select>
-        <button class="main-btn" onclick="openProtected('inv-modal')"><i class="fa-solid fa-boxes-stacked"></i> <span id="t-btn-inv">کۆگە</span></button>
-        <button class="main-btn" onclick="showModal('debt-modal')" style="background:var(--warning); color:black;"><i class="fa-solid fa-hand-holding-dollar"></i> <span id="t-btn-debt">قەرزان</span></button>
-        <button class="main-btn" onclick="showModal('exp-modal')" style="background:var(--danger);"><i class="fa-solid fa-wallet"></i> <span id="t-btn-exp">خەرجی</span></button>
-        <button class="main-btn" onclick="openProtected('rep-modal')" style="background:#8b5cf6;"><i class="fa-solid fa-chart-line"></i> <span id="t-btn-rep">ڕاپۆرت</span></button>
-        <button class="main-btn" onclick="logout()" style="background:#475569; margin-top:10px;"><i class="fa-solid fa-power-off"></i> Logout</button>
-    </div>
-</div>
-
-<div class="modal" id="inv-modal" onclick="closeModal('inv-modal')">
-    <div class="modal-content" onclick="event.stopPropagation()">
-        <h3 id="t-inv-title">کۆگە</h3>
-        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap:10px; margin:15px 0;">
-            <input type="text" id="a-name" placeholder="Name">
-            <div style="display:flex; gap:5px;"><input type="text" id="a-code" placeholder="QR Code"><button onclick="startScanner('inv')" class="main-btn" style="width:50px; margin-top:8px; background:var(--text);"><i class="fa-solid fa-camera"></i></button></div>
-            <input type="number" id="a-cost" placeholder="Price">
-            <input type="number" id="a-qty" placeholder="Qty">
-        </div>
-        <button class="main-btn" onclick="addInv()">زێدەکرن</button>
-        <div class="search-box" style="margin-top:10px;">
-            <input type="text" id="inv-search" placeholder="گەڕیان ل کەرەستان..." oninput="renderAll()">
-        </div>
-        <div class="table-wrap"><table><thead><tr><th>ناڤ</th><th>بها</th><th>دانە</th><th>X</th></tr></thead><tbody id="inv-table"></tbody></table></div>
-    </div>
-</div>
-
-<div class="modal" id="debt-modal" onclick="closeModal('debt-modal')">
-    <div class="modal-content" onclick="event.stopPropagation()">
-        <h3 id="t-debt-title">لیستا قەرزێن قیستێ</h3>
-        <div class="table-wrap">
-            <table><thead><tr><th>کڕیار</th><th>فاتورە</th><th>کۆمێ قەرزی</th><th>رێکەفت</th></tr></thead><tbody id="debt-table"></tbody></table>
-        </div>
-    </div>
-</div>
-
-<div class="modal" id="exp-modal" onclick="closeModal('exp-modal')">
-    <div class="modal-content" onclick="event.stopPropagation()">
-        <h3 id="t-exp-title">تۆمارکرنا خەرجییان</h3>
-        <div style="display:flex; gap:10px; margin-bottom:10px;">
-            <input type="text" id="e-note" placeholder="چ تشتە؟">
-            <input type="number" id="e-amount" placeholder="بها">
-            <button onclick="addExp()" class="main-btn" style="width:100px;">ثبت</button>
-        </div>
-        <div class="table-wrap"><table><thead><tr><th>تێبینی</th><th>بها</th><th>رێکەفت</th></tr></thead><tbody id="exp-table"></tbody></table></div>
-    </div>
-</div>
-
-<div class="modal" id="rep-modal" onclick="closeModal('rep-modal')">
-    <div class="modal-content" onclick="event.stopPropagation()">
-        <h3 id="t-rep-title">ڕاپۆرت</h3>
-        <div id="rep-summary" style="padding:20px; background:var(--bg); border-radius:15px; margin-top:10px;"></div>
-    </div>
-</div>
-
-<div id="print-receipt">
-    <div style="text-align:center; border-bottom:1px solid #000; padding-bottom:10px;">
-        <h2 style="margin:0;">BIZHAR COMPUTER</h2>
-        <p>وەسڵا فرۆتنێ: #<span id="r-inv-no"></span></p>
-    </div>
-    <div style="margin:10px 0; font-size:12px;">
-        <p><b>کڕیار:</b> <span id="r-cust"></span></p>
-        <p><b>رێکەفت:</b> <span id="r-date"></span> <span id="r-time"></span></p>
-        <p><b>جۆر:</b> <span id="r-type"></span></p>
-    </div>
-    <table style="width:100%; border-collapse:collapse; font-size:12px;">
-        <thead style="border-bottom:1px solid #000;"><tr><th align="right">بابەت</th><th align="left">بها</th></tr></thead>
-        <tbody id="r-items-list"></tbody>
-    </table>
-    <div style="border-top:1px solid #000; margin-top:10px; padding-top:5px; text-align:right;">
-        <h3>کۆمێ گشتی: <span id="r-final"></span> IQD</h3>
-    </div>
-    <div style="text-align:center; margin-top:20px; font-size:10px; border-top:1px dashed #ccc; padding-top:10px;">
-        سوپاس بۆ هەڵبژارتنا مە <br> BIZHAR COMPUTER
-    </div>
-</div>
-
-<script>
-    const APP_AUTH = { user: "BIZHAR", pass: "07503653355" };
-    const SECURE_PASS = "07503644666";
-
-    const languages = {
-        ku: { new_sale: "فرۆتنا نوی", cust: "ناڤێ کڕیار", items: "کەلوپەل", disc: "داشکاندن", total: "کۆمێ گشتی", save: "تۆمار و پرێنت", inv_list: "لیستا فاتورەیان", inventory: "کۆگە", debt: "قەرزان", exp: "خەرجی", report: "ڕاپۆرت", settings: "ڕێکخستن", search: "گەڕیان ب ناڤ یان ژمارە..." },
-        ar: { new_sale: "بيع جديد", cust: "اسم الزبون", items: "المواد", disc: "خصم", total: "المجموع", save: "حفظ وطباعة", inv_list: "الفواتير", inventory: "المخزن", debt: "الديون", exp: "المصاريف", report: "التقرير", settings: "الإعدادات", search: "البحث بالاسم او الرقم..." },
-        en: { new_sale: "New Sale", cust: "Customer", items: "Items", disc: "Discount", total: "Total", save: "Save & Print", inv_list: "Invoices", inventory: "Inventory", debt: "Debts", exp: "Expenses", report: "Reports", settings: "Settings", search: "Search by name or number..." }
-    };
-
-    const firebaseConfig = { databaseURL: "https://bizhar-pos-default-rtdb.firebaseio.com/" };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-    
-    let inv=[], sales=[], expenses=[], currentSaleItems=[], invCounter=1, html5QrCode;
-
-    function checkLogin() {
-        const u = document.getElementById('login-user').value;
-        const p = document.getElementById('login-pass').value;
-        if(u === APP_AUTH.user && p === APP_AUTH.pass) {
-            localStorage.setItem('bizhar_login', 'true');
-            document.getElementById('login-overlay').style.display = 'none';
-        } else {
-            document.getElementById('login-msg').innerText = "کۆد خەلەتە!";
-        }
-    }
-
-    function logout() { localStorage.removeItem('bizhar_login'); location.reload(); }
-
-    function openProtected(modalId) {
-        const p = prompt("Password:");
-        if(p === SECURE_PASS) {
-            if(modalId === 'rep-modal') updateReport();
-            showModal(modalId);
-        } else if(p !== null) alert("Wrong Password!");
-    }
-
-    // Sync with Firebase
-    db.ref('/').on('value', snap => {
-        const d = snap.val() || {};
-        inv = d.i || []; 
-        sales = d.s || []; 
-        expenses = d.e || [];
-        invCounter = d.c || (sales.length + 1);
-        document.getElementById('next-inv-no').innerText = "#" + invCounter;
-        renderAll();
-    });
-
-    function startScanner(mode) {
-        document.getElementById('scanner-wrapper').style.display = 'block';
-        html5QrCode = new Html5Qrcode("reader");
-        html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, (txt) => {
-            if (mode==='sale') {
-                const itm = inv.find(x => x.code === txt);
-                if(itm && parseInt(itm.qty) > 0) { currentSaleItems.push({...itm}); renderCurrentSale(); }
-            } else { document.getElementById('a-code').value = txt; stopScanner(); }
-        }).catch(err => console.log(err));
-    }
-
-    function stopScanner() { if(html5QrCode) html5QrCode.stop().then(()=> document.getElementById('scanner-wrapper').style.display='none'); }
-
-    function addItemToSale() {
-        const name = document.getElementById('i-select').value;
-        const itm = inv.find(x => x.name === name);
-        if(itm && parseInt(itm.qty) > 0) { currentSaleItems.push({...itm}); renderCurrentSale(); }
-        else if(itm) alert("دانە ل کۆگە نینە!");
-    }
-
-    function renderCurrentSale() {
-        const area = document.getElementById('selected-items-area'); area.innerHTML = '';
-        currentSaleItems.forEach((itm, idx) => {
-            area.innerHTML += `<div class="item-row"><div><b>${itm.name}</b><br><small>${parseInt(itm.cost).toLocaleString()} IQD</small></div><i class="fa-solid fa-circle-xmark" onclick="removeItem(${idx})" style="color:var(--danger); cursor:pointer;"></i></div>`;
-        });
-        calcFinal();
-    }
-
-    function removeItem(idx) { currentSaleItems.splice(idx,1); renderCurrentSale(); }
-
-    function calcFinal() {
-        let sub = currentSaleItems.reduce((a, b) => a + parseFloat(b.cost), 0);
-        const type = document.getElementById('i-pay-type').value;
-        let total = sub;
-
-        if(type === 'debt') {
-            total = sub * 1.40; // Add 40% margin for installments
-            document.getElementById('i-disc').disabled = true;
-            document.getElementById('i-disc').value = 0;
-        } else {
-            document.getElementById('i-disc').disabled = false;
-            let d = parseFloat(document.getElementById('i-disc').value) || 0;
-            total = Math.max(0, sub - d);
-        }
         
-        document.getElementById('f-total').innerText = Math.round(total).toLocaleString();
-        return Math.round(total);
-    }
-
-    function saveSale() {
-        if(currentSaleItems.length === 0) return;
-        const now = new Date();
-        const type = document.getElementById('i-pay-type').value;
-        const finalPrice = calcFinal();
-
-        const saleData = {
-            invNo: invCounter,
-            cust: document.getElementById('i-cust').value.trim() || "Guest",
-            items: currentSaleItems,
-            total: finalPrice,
-            type: type,
-            date: now.toLocaleDateString('en-GB'),
-            time: now.toLocaleTimeString('en-GB', {hour12:false})
-        };
-
-        // Update Inventory qty
-        currentSaleItems.forEach(si => { 
-            let idx = inv.findIndex(x => x.name === si.name); 
-            if(idx > -1) inv[idx].qty = parseInt(inv[idx].qty) - 1; 
-        });
-
-        sales.unshift(saleData); 
-        invCounter++;
-        db.ref('/').set({ i: inv, s: sales, c: invCounter, e: expenses });
-
-        // Print Setup
-        document.getElementById('r-inv-no').innerText = saleData.invNo;
-        document.getElementById('r-cust').innerText = saleData.cust;
-        document.getElementById('r-date').innerText = saleData.date;
-        document.getElementById('r-time').innerText = saleData.time;
-        document.getElementById('r-type').innerText = type === 'cash' ? 'نەقد' : 'قیست (1.4x)';
-        const rl = document.getElementById('r-items-list'); rl.innerHTML = '';
-        saleData.items.forEach(i => rl.innerHTML += `<tr><td align="right">${i.name}</td><td align="left">${parseInt(i.cost).toLocaleString()}</td></tr>`);
-        document.getElementById('r-final').innerText = finalPrice.toLocaleString();
-
-        setTimeout(() => { 
-            window.print(); 
-            currentSaleItems=[]; 
-            document.getElementById('i-cust').value=""; 
-            renderCurrentSale(); 
-        }, 500);
-    }
-
-    function addExp() {
-        const note = document.getElementById('e-note').value;
-        const amt = document.getElementById('e-amount').value;
-        if(note && amt) {
-            expenses.unshift({note, amt: parseFloat(amt), date: new Date().toLocaleDateString('en-GB')});
-            db.ref('/').set({i:inv, s:sales, c:invCounter, e:expenses});
-            document.getElementById('e-note').value = '';
-            document.getElementById('e-amount').value = '';
-        }
-    }
-
-    function renderAll() {
-        // Render Inventory Select
-        const sel = document.getElementById('i-select'); sel.innerHTML = '<option value="">...</option>';
-        inv.forEach(x => { if(parseInt(x.qty) > 0) sel.innerHTML += `<option value="${x.name}">${x.name} (${parseInt(x.cost).toLocaleString()})</option>`; });
+        <div id="board"></div>
         
-        // Render Sales Table
-        const query = document.getElementById('sale-search').value.toLowerCase();
-        const sl = document.getElementById('sales-list'); sl.innerHTML = '';
-        sales.filter(s => s.cust.toLowerCase().includes(query) || s.invNo.toString().includes(query)).forEach((s, idx) => {
-            sl.innerHTML += `<tr><td>#${s.invNo}</td><td>${s.cust}</td><td>${s.type}</td><td>${s.total.toLocaleString()}</td><td>${s.date}</td><td><i onclick="delSale(${idx})" class="fa-solid fa-trash" style="color:var(--danger); cursor:pointer;"></i></td></tr>`;
-        });
+        <div class="status p1-turn" id="status" data-i18n="statusTurn1">دۆرە یا یاریزانێ ئێکێ یە</div>
+    </div>
 
-        // Render Inventory Table with search
-        const invQuery = document.getElementById('inv-search').value.toLowerCase();
-        const il = document.getElementById('inv-table'); il.innerHTML = '';
-        inv.filter(x => x.name.toLowerCase().includes(invQuery)).forEach((x, idx) => {
-            const low = parseInt(x.qty) < 5 ? '<span class="badge-danger">Low</span>' : '';
-            il.innerHTML += `<tr><td>${x.name}</td><td>${parseInt(x.cost).toLocaleString()}</td><td>${x.qty} ${low}</td><td><i onclick="delInv(${idx})" class="fa-solid fa-trash" style="color:var(--danger); cursor:pointer;"></i></td></tr>`;
-        });
+    <div id="settings-modal" class="hidden">
+        <div class="modal-content settings-content">
+            <h2 data-i18n="menuTitle">⚙️ ڕێکخستنێن یاریێ</h2>
+            
+            <div class="setting-group">
+                <label data-i18n="langLabel">🌐 زمان (Language):</label>
+                <select id="lang-selector" onchange="changeLanguage()">
+                    <option value="ku-badini">کوردی (بادینی)</option>
+                    <option value="ku-sorani">کوردی (سۆرانی)</option>
+                    <option value="fa">فارسی</option>
+                    <option value="ar">العربية</option>
+                    <option value="tr">Türkçe</option>
+                    <option value="en">English</option>
+                </select>
+            </div>
 
-        // Render Debt (Installments)
-        const dl = document.getElementById('debt-table'); dl.innerHTML = '';
-        sales.filter(s => s.type === 'debt').forEach(s => {
-            dl.innerHTML += `<tr><td>${s.cust}</td><td>#${s.invNo}</td><td>${s.total.toLocaleString()}</td><td>${s.date}</td></tr>`;
-        });
+            <div class="setting-group">
+                <label data-i18n="modeLabel">🎮 شێوازێ یاریکرنێ:</label>
+                <select id="game-mode" onchange="handleSettingChange()">
+                    <option value="pvp" data-i18n="modePvp">دگەل هەڤالی د ئێک مۆبایل دا</option>
+                    <option value="pve" data-i18n="modePve">دژی کۆمپیوتەری (AI)</option>
+                    <option value="online" data-i18n="modeOnline">یاریکرن ب ئۆنلاین (Online)</option>
+                </select>
+                <select id="ai-difficulty" onchange="handleSettingChange()" style="display:none; margin-top:5px;">
+                    <option value="easy" data-i18n="diffEasy">AI: زەعیف</option>
+                    <option value="normal" selected data-i18n="diffNormal">AI: نۆرمال</option>
+                    <option value="hard" data-i18n="diffHard">AI: ب زەحمەت</option>
+                </select>
+            </div>
 
-        // Render Expenses
-        const el = document.getElementById('exp-table'); el.innerHTML = '';
-        expenses.forEach((e, idx) => {
-            el.innerHTML += `<tr><td>${e.note}</td><td>${e.amt.toLocaleString()}</td><td>${e.date}</td></tr>`;
-        });
-    }
-
-    function addInv() {
-        const n = document.getElementById('a-name').value, c = document.getElementById('a-code').value, p = document.getElementById('a-cost').value, q = document.getElementById('a-qty').value;
-        if(n && p && q) { 
-            inv.push({name:n, code:c, cost:p, qty:q}); 
-            db.ref('/').set({i:inv, s:sales, c:invCounter, e:expenses}); 
-            document.getElementById('a-name').value=''; document.getElementById('a-code').value=''; document.getElementById('a-cost').value=''; document.getElementById('a-qty').value=''; 
-        }
-    }
-
-    function updateReport() {
-        const totalSales = sales.reduce((a, b) => a + b.total, 0);
-        const totalExp = expenses.reduce((a, b) => a + b.amt, 0);
-        document.getElementById('rep-summary').innerHTML = `
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                <div style="background:var(--success); color:white; padding:15px; border-radius:10px; text-align:center;">
-                    <h3>داهات</h3>
-                    <p>${totalSales.toLocaleString()} IQD</p>
-                </div>
-                <div style="background:var(--danger); color:white; padding:15px; border-radius:10px; text-align:center;">
-                    <h3>خەرجی</h3>
-                    <p>${totalExp.toLocaleString()} IQD</p>
+            <div class="setting-group">
+                <label data-i18n="timeLabel">⏳ دەمێ یاریکرنێ:</label>
+                <div style="display: flex; gap: 10px;">
+                    <select id="timer-setting" onchange="handleSettingChange()" style="flex: 1;">
+                        <option value="unlimited" selected data-i18n="timeUnlimited">دەم: بێسنوور (ئازاد)</option>
+                        <option value="custom" data-i18n="timeCustom">دەم: دیارکری (خولەک)</option>
+                    </select>
+                    <input type="number" id="timer-minutes" min="1" max="60" value="5" onchange="handleSettingChange()" style="display:none; width: 70px;">
                 </div>
             </div>
-            <div style="background:var(--primary); color:white; padding:15px; border-radius:10px; text-align:center; margin-top:10px;">
-                <h3>سافی قازانج</h3>
-                <h2 style="font-size:24px;">${(totalSales - totalExp).toLocaleString()} IQD</h2>
-            </div>`;
-    }
 
-    function changeLang(l) {
-        localStorage.setItem('bizhar_lang', l);
-        const t = languages[l] || languages['ku'];
-        document.getElementById('main-html').dir = (l==='en'||l==='tr') ? 'ltr' : 'rtl';
-        document.getElementById('t-new-sale').innerText = t.new_sale;
-        document.getElementById('t-cust-label').innerText = t.cust;
-        document.getElementById('t-items-label').innerText = t.items;
-        document.getElementById('t-disc-label').innerText = t.disc;
-        document.getElementById('t-total-label').innerText = t.total;
-        document.getElementById('t-save-btn').innerText = t.save;
-        document.getElementById('t-invoice-list').innerText = t.inv_list;
-        document.getElementById('t-btn-inv').innerText = t.inventory;
-        document.getElementById('t-btn-debt').innerText = t.debt;
-        document.getElementById('t-btn-exp').innerText = t.exp;
-        document.getElementById('t-btn-rep').innerText = t.report;
-        document.getElementById('t-settings').innerText = t.settings;
-        document.getElementById('sale-search').placeholder = t.search;
-        renderAll();
-    }
+            <div class="setting-group">
+                <label data-i18n="themeLabel">🎨 ثێم و دیزاینا یاریێ:</label>
+                <select id="theme-selector" onchange="changeTheme()">
+                    <option value="neon" data-i18n="themeNeon">١. نیۆن (Neon)</option>
+                    <option value="wood" data-i18n="themeWood">٢. دارین (Wood)</option>
+                    <option value="gold" data-i18n="themeGold">٣. زێڕین (Gold)</option>
+                    <option value="dark" data-i18n="themeDark">٤. تاریک (Dark)</option>
+                    <option value="ocean" data-i18n="themeOcean">٥. دەریایی (Ocean)</option>
+                    <option value="cyber" data-i18n="themeCyber">٦. سایبەرپانک (Cyber)</option>
+                    <option value="forest" data-i18n="themeForest">٧. دارستان (Forest)</option>
+                    <option value="vintage" data-i18n="themeVintage">٨. کەڤنار (Vintage)</option>
+                    <option value="lava" data-i18n="themeLava">٩. ئاگرین (Lava)</option>
+                    <option value="royal" data-i18n="themeRoyal">١٠. شاهانە (Royal)</option>
+                </select>
+            </div>
 
-    function delInv(i) { if(confirm("ئەرێ دێ رەشکەی؟")) { inv.splice(i,1); db.ref('/').set({i:inv, s:sales, c:invCounter, e:expenses}); } }
-    function delSale(i) { if(confirm("ئەرێ دێ فاتورێ رەشکەی؟")) { sales.splice(i,1); db.ref('/').set({i:inv, s:sales, c:invCounter, e:expenses}); } }
-    function showModal(id) { document.getElementById(id).style.display = 'flex'; }
-    function closeModal(id) { document.getElementById(id).style.display = 'none'; stopScanner(); }
-    function toggleDark() { document.body.classList.toggle('dark-mode'); }
+            <div class="action-buttons-grid">
+                <button id="mute-btn" class="action-btn" onclick="toggleMute()" data-i18n="soundOn">🔊 دەنگ</button>
+                <button id="restart-btn" class="action-btn" onclick="resetGame(true)" data-i18n="restartBtn">🔄 نوی کرنەڤە</button>
+                <button id="install-btn" class="action-btn" style="display:none;" onclick="installApp()" data-i18n="installBtn">📥 دابەزاندن</button>
+            </div>
 
-    window.onload = () => {
-        if(localStorage.getItem('bizhar_login') === 'true') document.getElementById('login-overlay').style.display = 'none';
-        const savedLang = localStorage.getItem('bizhar_lang') || 'ku';
-        document.getElementById('lang-changer').value = savedLang;
-        changeLang(savedLang);
-    };
-</script>
+            <button onclick="toggleMenu()" class="action-btn close-menu-btn" data-i18n="closeBtn">❌ گرتن</button>
+        </div>
+    </div>
+
+    <div id="online-modal" class="hidden">
+        <div class="modal-content online-content">
+            <h2 data-i18n="onlinePlayTitle">🌐 یاریکرن ب ئۆنلاین</h2>
+            
+            <div class="online-options">
+                <button id="btn-show-host" class="action-btn host-btn" onclick="showHostUI()" data-i18n="hostGame">دروستکرنا ژوورێ (Host)</button>
+                <button id="btn-show-join" class="action-btn join-btn" onclick="showJoinUI()" data-i18n="joinGame">چوونە ژوور (Client)</button>
+            </div>
+
+            <div id="host-ui" style="display: none;">
+                <p data-i18n="yourRoomCode" style="color: #fff; font-size: 1.1rem; margin-bottom: 5px;">کۆدێ ژوورا تە ئەڤەیە:</p>
+                <div class="room-code-display" id="display-room-code">----</div>
+                <p class="waiting-text" data-i18n="waitPlayer">چاڤەڕێی یاریزانێ ٢ یە...</p>
+                <button class="action-btn close-menu-btn" onclick="cancelOnline()" data-i18n="cancelBtn" style="margin-top: 15px;">پاشگەزبوون</button>
+            </div>
+
+            <div id="join-ui" style="display: none;">
+                <p data-i18n="enterRoomCode" style="color: #fff; font-size: 1.1rem; margin-bottom: 5px;">کۆدێ ژوورێ ل ڤێرە بنڤیسە:</p>
+                <input type="number" id="join-code-input" placeholder="نموونە: 1234">
+                <button class="action-btn start-join-btn" onclick="joinRoom()" data-i18n="joinRoomBtn">چوونە ژوور</button>
+                <button class="action-btn close-menu-btn" onclick="cancelOnline()" data-i18n="cancelBtn" style="margin-top: 15px;">پاشگەزبوون</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="game-over-modal" class="hidden">
+        <div class="modal-content">
+            <h2 id="winner-text">سەرکەفتن!</h2>
+            <button onclick="resetGame(true)" data-i18n="restartBtn">یارییەکا نوی</button>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script src="script.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js');
+            });
+        }
+    </script>
 </body>
 </html>
