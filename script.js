@@ -231,8 +231,6 @@ function updateUIForSettings() {
 }
 
 function showHostUI() {
-    document.querySelector('.online-options').style.display = 'none';
-    document.getElementById('host-ui').style.display = 'block';
     createRoom(); 
 }
 
@@ -252,13 +250,19 @@ function cancelOnline() {
 
 function createRoom() {
     if (!database) { showWarning(translations[currentLang].noInternet); return; }
+
+    // بکارئینانا initBoard ل شوینا resetGame داکو پەنجەرە نەهێتە گرتن
+    initBoard(true); 
+
+    // پیشاندانا بەشێ Host پشتی کارپێکرنا initBoard داکو نەشارتیتەڤە
+    document.querySelector('.online-options').style.display = 'none';
+    document.getElementById('join-ui').style.display = 'none';
+    document.getElementById('host-ui').style.display = 'block';
+
     currentRoomId = Math.floor(1000 + Math.random() * 9000).toString();
     myRole = 1; 
     
     document.getElementById('display-room-code').innerText = currentRoomId;
-    
-    // بکارئینانا initBoard ل شوینا resetGame داکو پەنجەرە نەهێتە گرتن
-    initBoard(true); 
     
     database.ref('rooms/' + currentRoomId).set({
         board: board, currentPlayer: 1,
@@ -831,7 +835,7 @@ function onCellClick(r, c) {
         } else { validMoves = pieceMoves; }
 
         selectedPiece = { r, c }; renderBoard();
-        if(audioCtx.state === 'suspended') audioCtx.resume();
+        if(audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
     } else {
         if (!multiJumpPiece && validMoves.some(m => m.r === r && m.c === c)) { executeMove(r, c); } 
         else if (!multiJumpPiece) { selectedPiece = null; validMoves = []; renderBoard(); }
@@ -978,9 +982,9 @@ function executeMove(r, c) {
         if (move.jump) { 
             board[move.jump.r][move.jump.c] = 0; 
             captured = true; 
-            playSound('capture'); 
+            if(typeof playSound === 'function') playSound('capture'); 
         } else { 
-            playSound('move'); 
+            if(typeof playSound === 'function') playSound('move'); 
         }
 
         let crownedThisTurn = false;
@@ -1062,7 +1066,7 @@ function checkLastPieceKing() {
     let madeKing = false;
     if (p1Count === 1 && board[p1Pos.r][p1Pos.c] === 1) { board[p1Pos.r][p1Pos.c] = 3; madeKing = true; }
     if (p2Count === 1 && board[p2Pos.r][p2Pos.c] === 2) { board[p2Pos.r][p2Pos.c] = 4; madeKing = true; }
-    if (madeKing) playSound('king');
+    if (madeKing && typeof playSound === 'function') playSound('king');
 }
 
 function showWarning(msg) {
