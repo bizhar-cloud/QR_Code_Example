@@ -211,3 +211,4 @@ select:hover, input:hover { background: rgba(255,255,255,0.2); }
     75% { transform: translate(2px, 1px) scale(1.1); } 
     100% { transform: translate(1px, -1px) scale(1.1); } 
 }
+
