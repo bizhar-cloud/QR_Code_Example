@@ -1,4 +1,6 @@
 let database = null;
+let audioCtx = null; 
+
 try {
     if (typeof window.firebase !== 'undefined') {
         const firebaseConfig = {
@@ -19,7 +21,23 @@ try {
         console.warn("سێرڤەر نەهاتە دیتن.");
     }
 } catch (error) {
-    console.error("ئاریشە:", error);
+    console.error("ئاریشە د فایەربەیس دا:", error);
+}
+
+// زێدەکرنا دەنگان
+const gameSounds = {
+    move: new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3'),
+    capture: new Audio('https://assets.mixkit.co/active_storage/sfx/2003/2003-preview.mp3'),
+    win: new Audio('https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3'),
+    king: new Audio('https://assets.mixkit.co/active_storage/sfx/2004/2004-preview.mp3')
+};
+
+function playSound(type) {
+    if (isMuted) return; 
+    if (gameSounds[type]) {
+        gameSounds[type].currentTime = 0;
+        gameSounds[type].play().catch(err => console.warn("Audio play blocked:", err));
+    }
 }
 
 function toggleMenu() {
@@ -45,7 +63,7 @@ const translations = {
         themeDark: "٤. تاریک (Dark)", themeOcean: "٥. دەریایی (Ocean)", themeCyber: "٦. سایبەرپانک (Cyber)",
         themeForest: "٧. دارستان (Forest)", themeVintage: "٨. کەڤنار (Vintage)", themeLava: "٩. ئاگرین (Lava)", themeRoyal: "١٠. شاهانە (Royal)",
         soundOn: "🔊 دەنگ", soundOff: "🔇 بێدەنگ", restartBtn: "🔄 نوی کرنەڤە", installBtn: "📥 دابەزاندن", closeBtn: "❌ گرتن",
-        startBtn: "▶ دەستپێکرن", menuBtn: "⚙️ مینیو", player1: "یاریزان ١", player2: "یاریزان ٢",
+        startBtn: "▶ دەستپێکرن", menuBtn: "⚙️ ڕێکخستن", player1: "یاریزان ١", player2: "یاریزان ٢",
         statusTurn1: "دۆرە یا یاریزانێ ئێکێ یە", statusTurn2: "دۆرە یا یاریزانێ دووێ یە", statusAi: "کۆمپیوتەر یێ هزر دکەت...",
         drawMoves: "پێنگاڤ بۆ یەکسانبوونێ", winDraw: "یاری ب یەکسانبوون ب دوماهی هات! 🤝",
         winP1: "یاریزانێ ١ ب سەرکەفت! 🏆", winP2: "یاریزانێ ٢ ب سەرکەفت! 🏆", winAi: "کۆمپیوتەر ب سەرکەفت! 🤖",
@@ -64,7 +82,7 @@ const translations = {
         themeDark: "٤. تاریک (Dark)", themeOcean: "٥. دەریایی (Ocean)", themeCyber: "٦. سایبەرپانک (Cyber)",
         themeForest: "٧. دارستان (Forest)", themeVintage: "٨. کۆن (Vintage)", themeLava: "٩. ئاگرین (Lava)", themeRoyal: "١٠. شاهانە (Royal)",
         soundOn: "🔊 دەنگ", soundOff: "🔇 بێدەنگ", restartBtn: "🔄 نوێ کردنەوە", installBtn: "📥 دابەزاندن", closeBtn: "❌ داخستن",
-        startBtn: "▶ دەستپێکردن", menuBtn: "⚙️ مینیو", player1: "یاریزانی ١", player2: "یاریزانی ٢",
+        startBtn: "▶ دەستپێکردن", menuBtn: "⚙️ ڕێکخستن", player1: "یاریزانی ١", player2: "یاریزانی ٢",
         statusTurn1: "سۆرەی یاریزانی یەکەمە", statusTurn2: "سۆرەی یاریزانی دووەمە", statusAi: "کۆمپیوتەر بیر دەکاتەوە...",
         drawMoves: "هەنگاو بۆ یەکسانبوون", winDraw: "یارییەکە بە یەکسانبوون کۆتایی هات! 🤝",
         winP1: "یاریزانی ١ سەرکەوت! 🏆", winP2: "یاریزانی ٢ سەرکەوت! 🏆", winAi: "کۆمپیوتەر سەرکەوت! 🤖",
@@ -80,7 +98,7 @@ const translations = {
         diffEasy: "آسان", diffNormal: "متوسط", diffHard: "سخت", timeLabel: "⏳ زمان:", timeUnlimited: "نامحدود", timeCustom: "دلخواه (دقیقه)",
         themeLabel: "🎨 قالب:", themeNeon: "۱. نئون", themeWood: "۲. چوبی", themeGold: "۳. طلایی", themeDark: "۴. تاریک", themeOcean: "۵. اقیانوس", themeCyber: "۶. سایبرپانک", themeForest: "۷. جنگل", themeVintage: "۸. کلاسیک", themeLava: "۹. گدازه", themeRoyal: "۱۰. رویال",
         soundOn: "🔊 صدا", soundOff: "🔇 بی‌صدا", restartBtn: "🔄 شروع مجدد", installBtn: "📥 نصب", closeBtn: "❌ بستن",
-        startBtn: "▶ شروع", menuBtn: "⚙️ منو", player1: "بازیکن ۱", player2: "بازیکن ۲",
+        startBtn: "▶ شروع", menuBtn: "⚙️ تنظیمات", player1: "بازیکن ۱", player2: "بازیکن ۲",
         statusTurn1: "نوبت بازیکن اول", statusTurn2: "نوبت بازیکن دوم", statusAi: "کامپیوتر فکر میکند...",
         drawMoves: "حرکت تا مساوی", winDraw: "بازی مساوی شد! 🤝", winP1: "بازیکن ۱ برد! 🏆", winP2: "بازیکن ۲ برد! 🏆", winAi: "کامپیوتر برد! 🤖",
         warnStart: "اول دکمه شروع را بزنید!", warnForce: "باید مهره حریف را بزنید!", undoSuccess: "حرکت برگشت!",
@@ -95,7 +113,7 @@ const translations = {
         diffEasy: "سهل", diffNormal: "عادي", diffHard: "صعب", timeLabel: "⏳ الوقت:", timeUnlimited: "غير محدود", timeCustom: "مخصص (دقائق)",
         themeLabel: "🎨 المظهر:", themeNeon: "١. نيون", themeWood: "٢. خشبي", themeGold: "٣. ذهبي", themeDark: "٤. داكن", themeOcean: "٥. محيط", themeCyber: "٦. سايبربانك", themeForest: "٧. غابة", themeVintage: "٨. عتيق", themeLava: "٩. حمم", themeRoyal: "١٠. ملكي",
         soundOn: "🔊 الصوت", soundOff: "🔇 صامت", restartBtn: "🔄 إعادة", installBtn: "📥 تثبيت", closeBtn: "❌ إغلاق",
-        startBtn: "▶ ابدأ", menuBtn: "⚙️ القائمة", player1: "اللاعب ١", player2: "اللاعب ٢",
+        startBtn: "▶ ابدأ", menuBtn: "⚙️ الإعدادات", player1: "اللاعب ١", player2: "اللاعب ٢",
         statusTurn1: "دور اللاعب الأول", statusTurn2: "دور اللاعب الثاني", statusAi: "الكمبيوتر يفكر...",
         drawMoves: "حركات للتعادل", winDraw: "تعادل! 🤝", winP1: "اللاعب ١ فاز! 🏆", winP2: "اللاعب ٢ فاز! 🏆", winAi: "الكمبيوتر فاز! 🤖",
         warnStart: "اضغط ابدأ أولاً!", warnForce: "يجب أن تأكل قطعة!", undoSuccess: "تم التراجع!",
@@ -110,7 +128,7 @@ const translations = {
         diffEasy: "Kolay", diffNormal: "Normal", diffHard: "Zor", timeLabel: "⏳ Süre:", timeUnlimited: "Sınırsız", timeCustom: "Özel (Dk)",
         themeLabel: "🎨 Tema:", themeNeon: "1. Neon", themeWood: "2. Ahşap", themeGold: "3. Altın", themeDark: "4. Karanlık", themeOcean: "5. Okyanus", themeCyber: "6. Siberpunk", themeForest: "7. Orman", themeVintage: "8. Klasik", themeLava: "9. Lav", themeRoyal: "10. Kraliyet",
         soundOn: "🔊 Ses", soundOff: "🔇 Sessiz", restartBtn: "🔄 Yeniden Başlat", installBtn: "📥 Yükle", closeBtn: "❌ Kapat",
-        startBtn: "▶ Başla", menuBtn: "⚙️ Menü", player1: "Oyuncu 1", player2: "Oyuncu 2",
+        startBtn: "▶ Başla", menuBtn: "⚙️ Ayarlar", player1: "Oyuncu 1", player2: "Oyuncu 2",
         statusTurn1: "Sıra 1. Oyuncuda", statusTurn2: "Sıra 2. Oyuncuda", statusAi: "Bilgisayar düşünüyor...",
         drawMoves: "Beraberlik hamlesi", winDraw: "Berabere! 🤝", winP1: "Oyuncu 1 Kazandı! 🏆", winP2: "Oyuncu 2 Kazandı! 🏆", winAi: "Bilgisayar Kazandı! 🤖",
         warnStart: "Önce Başla'ya tıklayın!", warnForce: "Rakibi yemeniz şart!", undoSuccess: "Geri alındı!",
@@ -125,7 +143,7 @@ const translations = {
         diffEasy: "Easy", diffNormal: "Normal", diffHard: "Hard", timeLabel: "⏳ Time:", timeUnlimited: "Unlimited", timeCustom: "Custom (Mins)",
         themeLabel: "🎨 Theme:", themeNeon: "1. Neon", themeWood: "2. Wood", themeGold: "3. Gold", themeDark: "4. Dark", themeOcean: "5. Ocean", themeCyber: "6. Cyberpunk", themeForest: "7. Forest", themeVintage: "8. Vintage", themeLava: "9. Lava", themeRoyal: "10. Royal",
         soundOn: "🔊 Sound", soundOff: "🔇 Mute", restartBtn: "🔄 Restart", installBtn: "📥 Install", closeBtn: "❌ Close",
-        startBtn: "▶ Start", menuBtn: "⚙️ Menu", player1: "Player 1", player2: "Player 2",
+        startBtn: "▶ Start", menuBtn: "⚙️ Settings", player1: "Player 1", player2: "Player 2",
         statusTurn1: "Player 1's Turn", statusTurn2: "Player 2's Turn", statusAi: "AI thinking...",
         drawMoves: "Moves to draw", winDraw: "Game Drawn! 🤝", winP1: "Player 1 Wins! 🏆", winP2: "Player 2 Wins! 🏆", winAi: "AI Wins! 🤖",
         warnStart: "Click Start first!", warnForce: "You must capture!", undoSuccess: "Undone!",
@@ -159,6 +177,18 @@ function changeLanguage() {
     applyLanguage();
     saveGameState();
 }
+
+// زێدەکرنا فانکشنێ بێدەنگکرنێ
+function toggleMute() {
+    isMuted = !isMuted;
+    const t = translations[currentLang];
+    const muteBtn = document.getElementById('mute-btn');
+    if (muteBtn) {
+        muteBtn.innerText = isMuted ? t.soundOff : t.soundOn;
+    }
+    saveGameState();
+}
+window.toggleMute = toggleMute;
 
 const ROWS = 8;
 const COLS = 8;
@@ -210,7 +240,6 @@ function installApp() {
     }
 }
 
-// ====== پەنجەرەیا ئۆنلاین (Online Setup UI) ======
 function updateUIForSettings() {
     const mode = document.getElementById('game-mode').value;
     isVsAI = (mode === 'pve');
@@ -245,35 +274,49 @@ function cancelOnline() {
     isOnline = false;
     currentRoomId = null;
     myRole = 0;
+    isGameStarted = false;
+    initBoard();
     toggleMenu(); 
+}
+
+function showGameScreen() {
+    document.getElementById('start-screen').classList.add('hidden-screen');
+    document.getElementById('game-screen').classList.remove('hidden-screen');
+}
+
+function hideGameScreen() {
+    document.getElementById('start-screen').classList.remove('hidden-screen');
+    document.getElementById('game-screen').classList.add('hidden-screen');
 }
 
 function createRoom() {
     if (!database) { showWarning(translations[currentLang].noInternet); return; }
 
-    // بکارئینانا initBoard ل شوینا resetGame داکو پەنجەرە نەهێتە گرتن
     initBoard(true); 
 
-    // پیشاندانا بەشێ Host پشتی کارپێکرنا initBoard داکو نەشارتیتەڤە
     document.querySelector('.online-options').style.display = 'none';
     document.getElementById('join-ui').style.display = 'none';
     document.getElementById('host-ui').style.display = 'block';
 
-    currentRoomId = Math.floor(1000 + Math.random() * 9000).toString();
+    // باشترکرنا کۆدێ ژوورێ دا کو تێکەل نەبیت
+    currentRoomId = Math.random().toString(36).substring(2, 7).toUpperCase();
     myRole = 1; 
     
     document.getElementById('display-room-code').innerText = currentRoomId;
     
-    database.ref('rooms/' + currentRoomId).set({
-        board: board, currentPlayer: 1,
-        p1Time: p1Time, p2Time: p2Time,
-        status: 'waiting',
-        p1CanUndo: p1CanUndo, p2CanUndo: p2CanUndo,
-        movesWithoutCapture: 0,
-        lastActionBy: 0
-    });
-    
-    listenToRoom();
+    try {
+        database.ref('rooms/' + currentRoomId).set({
+            board: board, currentPlayer: 1,
+            p1Time: p1Time, p2Time: p2Time,
+            status: 'waiting',
+            p1CanUndo: p1CanUndo, p2CanUndo: p2CanUndo,
+            movesWithoutCapture: 0,
+            lastActionBy: 0
+        });
+        listenToRoom();
+    } catch(e) {
+        showWarning("Error syncing to database.");
+    }
 }
 
 function joinRoom() {
@@ -282,25 +325,30 @@ function joinRoom() {
     if(!code) return;
     const t = translations[currentLang];
     
-    database.ref('rooms/' + code).once('value', snapshot => {
-        if(snapshot.exists()) {
-            currentRoomId = code;
-            myRole = 2; 
-            database.ref('rooms/' + currentRoomId).update({ status: 'playing' });
-            
-            showWarning(t.connected);
-            listenToRoom();
-            
-            setTimeout(() => {
-                document.getElementById('online-modal').classList.add('hidden');
-                isGameStarted = true;
-                startTimer();
-            }, 1000);
-            
-        } else {
-            showWarning(t.invalidCode);
-        }
-    });
+    try {
+        database.ref('rooms/' + code).once('value', snapshot => {
+            if(snapshot.exists()) {
+                currentRoomId = code;
+                myRole = 2; 
+                database.ref('rooms/' + currentRoomId).update({ status: 'playing' });
+                
+                showWarning(t.connected);
+                listenToRoom();
+                
+                setTimeout(() => {
+                    document.getElementById('online-modal').classList.add('hidden');
+                    isGameStarted = true;
+                    showGameScreen();
+                    startTimer();
+                }, 1000);
+                
+            } else {
+                showWarning(t.invalidCode);
+            }
+        });
+    } catch(e) {
+        showWarning("Connection Error.");
+    }
 }
 
 function listenToRoom() {
@@ -315,20 +363,21 @@ function listenToRoom() {
              setTimeout(() => {
                  document.getElementById('online-modal').classList.add('hidden');
                  isGameStarted = true;
+                 showGameScreen();
                  startTimer();
              }, 1000);
         }
 
         if (data.lastActionBy !== myRole && data.lastActionBy !== 0) {
-            board = data.board || board;
-            currentPlayer = data.currentPlayer || currentPlayer;
-            p1Time = data.p1Time !== undefined ? data.p1Time : p1Time;
-            p2Time = data.p2Time !== undefined ? data.p2Time : p2Time;
-            multiJumpPiece = data.multiJumpPiece || null;
-            lastMoveData = data.lastMoveData || { startR: null, startC: null, endR: null, endC: null };
-            p1CanUndo = data.p1CanUndo !== undefined ? data.p1CanUndo : p1CanUndo;
-            p2CanUndo = data.p2CanUndo !== undefined ? data.p2CanUndo : p2CanUndo;
-            movesWithoutCapture = data.movesWithoutCapture || 0;
+            board = data.board ? data.board : board;
+            currentPlayer = data.currentPlayer ? data.currentPlayer : currentPlayer;
+            p1Time = typeof data.p1Time !== 'undefined' ? data.p1Time : p1Time;
+            p2Time = typeof data.p2Time !== 'undefined' ? data.p2Time : p2Time;
+            multiJumpPiece = data.multiJumpPiece ? data.multiJumpPiece : null;
+            lastMoveData = data.lastMoveData ? data.lastMoveData : { startR: null, startC: null, endR: null, endC: null };
+            p1CanUndo = typeof data.p1CanUndo !== 'undefined' ? data.p1CanUndo : p1CanUndo;
+            p2CanUndo = typeof data.p2CanUndo !== 'undefined' ? data.p2CanUndo : p2CanUndo;
+            movesWithoutCapture = typeof data.movesWithoutCapture !== 'undefined' ? data.movesWithoutCapture : 0;
             
             renderBoard();
             updateScores();
@@ -340,21 +389,24 @@ function listenToRoom() {
 
 function syncGameState() {
     if (isOnline && currentRoomId && database) {
-        database.ref('rooms/' + currentRoomId).update({
-            board: board,
-            currentPlayer: currentPlayer,
-            p1Time: p1Time,
-            p2Time: p2Time,
-            multiJumpPiece: multiJumpPiece || null,
-            lastMoveData: lastMoveData,
-            p1CanUndo: p1CanUndo,
-            p2CanUndo: p2CanUndo,
-            movesWithoutCapture: movesWithoutCapture,
-            lastActionBy: myRole
-        });
+        try {
+            database.ref('rooms/' + currentRoomId).update({
+                board: board,
+                currentPlayer: currentPlayer,
+                p1Time: p1Time || 0,
+                p2Time: p2Time || 0,
+                multiJumpPiece: multiJumpPiece || null,
+                lastMoveData: lastMoveData || { startR: null, startC: null, endR: null, endC: null },
+                p1CanUndo: p1CanUndo,
+                p2CanUndo: p2CanUndo,
+                movesWithoutCapture: movesWithoutCapture || 0,
+                lastActionBy: myRole
+            });
+        } catch(e) {
+            console.error("Firebase Sync Error", e);
+        }
     }
 }
-// ====== دوماهیا لۆژیکا ئۆنلاین ======
 
 function startGame() {
     if (isOnline && !currentRoomId) {
@@ -362,9 +414,9 @@ function startGame() {
         return;
     }
     isGameStarted = true;
-    document.getElementById('start-btn').style.display = 'none';
+    showGameScreen();
     startTimer();
-    playSound('move');
+    if(typeof playSound === 'function') playSound('move');
     saveGameState();
 }
 window.startGame = startGame;
@@ -386,7 +438,7 @@ function saveUndoState() {
 }
 
 function undoMove() {
-    if (!undoState || isGameOver) return;
+    if (!undoState || isGameOver || isAnimating) return;
     
     let lastPieceOwner = undoState.currentPlayer;
     
@@ -408,7 +460,7 @@ function undoMove() {
     
     undoState = null; multiJumpPiece = null; selectedPiece = null; validMoves = [];
     
-    playSound('move');
+    if(typeof playSound === 'function') playSound('move');
     showWarning(translations[currentLang].undoSuccess);
     renderBoard(); updateScores(); updateStatus(); updateTimerDisplay();
     saveGameState();
@@ -445,8 +497,9 @@ function loadGameState() {
             if (!state || !state.board) return false;
             
             board = state.board; currentPlayer = state.currentPlayer;
-            multiJumpPiece = state.multiJumpPiece; lastMoveData = state.lastMoveData;
-            p1Time = state.p1Time; p2Time = state.p2Time;
+            multiJumpPiece = state.multiJumpPiece || null; 
+            lastMoveData = state.lastMoveData || { startR: null, startC: null, endR: null, endC: null };
+            p1Time = state.p1Time || 0; p2Time = state.p2Time || 0;
             movesWithoutCapture = state.movesWithoutCapture || 0;
             isGameStarted = state.isGameStarted !== undefined ? state.isGameStarted : false;
             isMuted = state.isMuted || false;
@@ -553,22 +606,35 @@ function initBoard(forceNew = false) {
     applyLanguage(); 
     
     if (isGameStarted) {
-        document.getElementById('start-btn').style.display = 'none';
+        showGameScreen();
         startTimer();
     } else {
-        document.getElementById('start-btn').style.display = 'inline-block';
+        hideGameScreen();
     }
     
     updateScores(); renderBoard(); updateStatus(); updateTimerDisplay();
 }
 
+// پاراستنا ڕێکخستنان د دەمێ ڕیسێتکرنێ دا
 function resetGame(force = false) {
-    if (force) localStorage.removeItem('damaSave');
+    if (force) {
+        const saved = localStorage.getItem('damaSave');
+        if (saved) {
+            try {
+                let state = JSON.parse(saved);
+                state.board = null; 
+                state.isGameStarted = false;
+                localStorage.setItem('damaSave', JSON.stringify(state));
+            } catch(e) {}
+        }
+    }
+    
     if (isOnline) { currentRoomId = null; myRole = 0; }
     const modal1 = document.getElementById('settings-modal');
     const modal2 = document.getElementById('online-modal');
     if (modal1) modal1.classList.add('hidden'); 
     if (modal2) modal2.classList.add('hidden'); 
+    if (aiTimeoutID) { clearTimeout(aiTimeoutID); aiTimeoutID = null; } 
     initBoard(force);
 }
 
@@ -603,9 +669,19 @@ function checkWinCondition() {
 function gameOver(winner) {
     isGameOver = true;
     clearInterval(timerInterval);
-    if (aiTimeoutID) clearTimeout(aiTimeoutID);
-    localStorage.removeItem('damaSave'); 
-    playSound('win');
+    if (aiTimeoutID) { clearTimeout(aiTimeoutID); aiTimeoutID = null; }
+    
+    const saved = localStorage.getItem('damaSave');
+    if (saved) {
+        try {
+            let state = JSON.parse(saved);
+            state.board = null; 
+            state.isGameStarted = false;
+            localStorage.setItem('damaSave', JSON.stringify(state));
+        } catch(e) {}
+    }
+
+    if(typeof playSound === 'function') playSound('win');
     
     const modal = document.getElementById('game-over-modal');
     const text = document.getElementById('winner-text');
@@ -646,6 +722,7 @@ function calculateForcedPieces() {
 
 function startUndoTimer(e) {
     e.preventDefault(); 
+    if (isAnimating) return; 
     const el = e.target;
     el.classList.add('undoing-piece');
     
@@ -835,7 +912,6 @@ function onCellClick(r, c) {
         } else { validMoves = pieceMoves; }
 
         selectedPiece = { r, c }; renderBoard();
-        if(audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
     } else {
         if (!multiJumpPiece && validMoves.some(m => m.r === r && m.c === c)) { executeMove(r, c); } 
         else if (!multiJumpPiece) { selectedPiece = null; validMoves = []; renderBoard(); }
@@ -886,7 +962,7 @@ function evaluateBoardForMove(chosen) {
 }
 
 function makeAIMove() {
-    if (currentPlayer !== 2 || isGameOver) return;
+    if (currentPlayer !== 2 || isGameOver || isAnimating) return;
 
     calculateForcedPieces(); 
 
@@ -1070,28 +1146,57 @@ function checkLastPieceKing() {
 }
 
 function showWarning(msg) {
-    const statusEl = document.getElementById('status');
-    if (!statusEl) return;
-    statusEl.innerText = msg; statusEl.className = "status warning";
+    const status1 = document.getElementById('status1');
+    const status2 = document.getElementById('status2');
+    let target = currentPlayer === 1 ? status1 : status2;
+    if (!target) return;
+    
+    target.innerText = msg;
+    target.classList.add("warning");
     setTimeout(() => { updateStatus(); }, 2500);
 }
 
 function updateStatus() {
-    const statusEl = document.getElementById('status');
-    if (!statusEl) return;
-    const t = translations[currentLang];
+    const status1 = document.getElementById('status1');
+    const status2 = document.getElementById('status2');
+    if (!status1 || !status2) return;
     
+    const t = translations[currentLang];
     let drawText = movesWithoutCapture > 0 ? ` (${t.drawMoves}: ${Math.floor(movesWithoutCapture/2)}/15)` : "";
 
     if (currentPlayer === 1) {
-        statusEl.innerText = `${t.statusTurn1}${drawText}`;
-        statusEl.className = "status p1-turn";
+        status1.innerText = `${t.statusTurn1}${drawText}`;
+        status2.innerText = isVsAI ? t.statusAi : t.statusTurn2;
+        
+        status1.className = "status-indicator p1-status active-status";
+        status2.className = "status-indicator p2-status";
     } else {
-        statusEl.innerText = isVsAI ? `${t.statusAi}${drawText}` : `${t.statusTurn2}${drawText}`;
-        statusEl.className = "status p2-turn";
+        status1.innerText = t.statusTurn1;
+        status2.innerText = isVsAI ? `${t.statusAi}${drawText}` : `${t.statusTurn2}${drawText}`;
+        
+        status1.className = "status-indicator p1-status";
+        status2.className = "status-indicator p2-status active-status";
+    }
+}
+
+function createFloatingPieces() {
+    const bg = document.getElementById('floating-bg');
+    if(!bg) return;
+    bg.innerHTML = ''; 
+    for(let i=0; i<15; i++) {
+        let piece = document.createElement('div');
+        piece.className = 'float-piece ' + (Math.random() > 0.5 ? 'float-p1' : 'float-p2');
+        let size = Math.random() * 40 + 30; 
+        piece.style.width = size + 'px';
+        piece.style.height = size + 'px';
+        piece.style.left = Math.random() * 100 + 'vw';
+        piece.style.animationDuration = (Math.random() * 12 + 8) + 's';
+        piece.style.animationDelay = (Math.random() * 5) + 's';
+        bg.appendChild(piece);
     }
 }
 
 window.onload = () => {
+    createFloatingPieces(); 
     initBoard();
 };
