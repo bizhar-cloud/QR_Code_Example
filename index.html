@@ -14,29 +14,38 @@
 </head>
 <body data-theme="neon">
 
-    <div class="game-wrapper">
-        <h1 data-i18n="appTitle">یاریا دامانێ</h1>
+    <div id="floating-bg"></div>
 
-        <div class="score-board">
-            <div class="score p1-score">
-                <span data-i18n="player1">یاریزان ١</span>: <span id="score1">0</span>
-                <div class="timer" id="timer1"></div>
-            </div>
-            
-            <div id="center-action-area">
-                <button id="menu-btn" onclick="toggleMenu()" data-i18n="menuBtn">⚙️ مینیو</button>
-                <button id="start-btn" onclick="startGame()" data-i18n="startBtn">▶ دەستپێکرن</button>
-            </div>
-            
-            <div class="score p2-score">
-                <span data-i18n="player2">یاریزان ٢</span>: <span id="score2">0</span>
-                <div class="timer" id="timer2"></div>
-            </div>
+    <div class="game-wrapper">
+
+        <div id="start-screen">
+            <button id="start-btn-main" class="btn-3d start-3d" onclick="startGame()" data-i18n="startBtn">▶ دەستپێکرن</button>
+            <button id="menu-btn-main" class="btn-3d menu-3d" onclick="toggleMenu()" data-i18n="menuBtn">⚙️ ڕێکخستن</button>
         </div>
         
-        <div id="board"></div>
-        
-        <div class="status p1-turn" id="status" data-i18n="statusTurn1">دۆرە یا یاریزانێ ئێکێ یە</div>
+        <div id="game-screen" class="hidden-screen">
+            
+            <div class="player-info p2-area">
+                <button class="icon-menu-btn" onclick="toggleMenu()" title="ڕێکخستن">⚙️</button>
+                <div class="status-indicator p2-status" id="status2" data-i18n="statusTurn2">دۆرە یا یاریزانێ دووێ یە</div>
+                <div class="score p2-score">
+                    <span data-i18n="player2">یاریزان ٢</span>: <span id="score2">0</span>
+                    <div class="timer" id="timer2"></div>
+                </div>
+            </div>
+            
+            <div id="board"></div>
+            
+            <div class="player-info p1-area">
+                <div class="score p1-score">
+                    <span data-i18n="player1">یاریزان ١</span>: <span id="score1">0</span>
+                    <div class="timer" id="timer1"></div>
+                </div>
+                <div class="status-indicator p1-status active-status" id="status1" data-i18n="statusTurn1">دۆرە یا یاریزانێ ئێکێ یە</div>
+                <button class="icon-menu-btn" onclick="toggleMenu()" title="ڕێکخستن">⚙️</button>
+            </div>
+            
+        </div>
     </div>
 
     <div id="settings-modal" class="hidden">
